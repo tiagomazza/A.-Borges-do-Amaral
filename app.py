@@ -27,8 +27,8 @@ if st.button("Button 1"):
     # Obter a hora atual
     submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # Criar nova linha com nome e hora
-    new_row = {"Name": name, "SubmissionDateTime": submission_datetime}
+    # Criar nova linha com nome, botão e hora
+    new_row = {"Name": name, "Button": "Button 1", "SubmissionDateTime": submission_datetime}
 
     # Adicionar nova linha aos dados existentes
     new_rows = existing_data_reservations.to_dict(orient="records")
@@ -43,8 +43,40 @@ if st.button("Button 2"):
     # Obter a hora atual
     submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # Criar nova linha com nome e hora
-    new_row = {"Name": name, "SubmissionDateTime": submission_datetime}
+    # Criar nova linha com nome, botão e hora
+    new_row = {"Name": name, "Button": "Button 2", "SubmissionDateTime": submission_datetime}
+
+    # Adicionar nova linha aos dados existentes
+    new_rows = existing_data_reservations.to_dict(orient="records")
+    new_rows.append(new_row)
+
+    # Atualizar a planilha com os novos dados
+    conn.update(worksheet="Folha", data=new_rows)
+
+    st.success("Details successfully submitted!")
+
+if st.button("Button 3"):
+    # Obter a hora atual
+    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Criar nova linha com nome, botão e hora
+    new_row = {"Name": name, "Button": "Button 3", "SubmissionDateTime": submission_datetime}
+
+    # Adicionar nova linha aos dados existentes
+    new_rows = existing_data_reservations.to_dict(orient="records")
+    new_rows.append(new_row)
+
+    # Atualizar a planilha com os novos dados
+    conn.update(worksheet="Folha", data=new_rows)
+
+    st.success("Details successfully submitted!")
+
+if st.button("Button 4"):
+    # Obter a hora atual
+    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Criar nova linha com nome, botão e hora
+    new_row = {"Name": name, "Button": "Button 4", "SubmissionDateTime": submission_datetime}
 
     # Adicionar nova linha aos dados existentes
     new_rows = existing_data_reservations.to_dict(orient="records")
