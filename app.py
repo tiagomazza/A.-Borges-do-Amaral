@@ -18,17 +18,10 @@ def escrever_registro(nome, acao):
         # Obter o PIN correspondente ao nome inserido
         pin = dados.loc[dados["Nome"] == nome, "Pin"].iloc[0]
         
-        # Ler os dados da planilha "Folha"
-        existing_data = conn.read(worksheet="Folha", usecols=["Nome"], ttl=5)
-        
-        # Encontrar a última linha preenchida na planilha
-        last_filled_row_index = existing_data.index[-1] + 2 if not existing_data.empty else 1
-        
         # Escrever o nome do botão na planilha
-        conn.update(
+        conn.append(
             worksheet="Folha",
-            data=[{"Nome": nome, "Ação": acao, "Timestamp": hora_atual}],
-            start=f"A{last_filled_row_index}"
+            data=[{"Nome": nome, "Ação": acao, "Timestamp": hora_atual}]
         )
         
         st.success(f"Registro de '{acao}' realizado para {nome}!")
