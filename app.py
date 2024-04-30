@@ -20,7 +20,7 @@ def escrever_registro(nome, acao):
     new_data = existing_data.append({"Nome": nome, "Ação": acao, "Timestamp": hora_atual}, ignore_index=True)
 
     # Escrever os dados atualizados na planilha
-    conn.update(worksheet="Folha", data=new_data)
+    conn.update(worksheet="Folha", data=new_data.values.tolist())
 
     st.success(f"Registro de '{acao}' efetuado com sucesso!")
 
