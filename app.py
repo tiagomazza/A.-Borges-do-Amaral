@@ -70,6 +70,13 @@ else:
     data_inicio = datetime.combine(data_inicio, datetime.min.time()) if data_inicio else None
     data_fim = datetime.combine(data_fim, datetime.max.time()) if data_fim else None
 
+    filtered_data = existing_data_reservations.copy()
+    if data_inicio and data_fim:
+        filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
+        filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
+    if nome_filtro:
+        filtered_data = filtered_data[filtered_data["Name"].str.contains(nome_filtro)]
+
     # Filtrar os dados
     filtered_data = existing_data_reservations.copy()
     if data_inicio and data_fim:
