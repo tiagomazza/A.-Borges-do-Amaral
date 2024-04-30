@@ -105,22 +105,27 @@ if pagina_selecionada == "Marcação de Ponto":
         else:
             st.warning("PIN incorreto. Por favor, digite um PIN válido.")
 
-else:
-    # Opções para filtrar por nome
-    nomes_unicos = existing_data_reservations["Name"].unique()
-    nome_filtro = st.sidebar.selectbox("Filtrar por nome:", [""] + list(nomes_unicos))
+elif pagina_selecionada == "Consultas":
+    st.title("Consulta de Registros")
+    
+    # Filtrar por nome
+    nomes = existing_data_reservations["Name"].unique()
+    filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
 
     # Filtrar por data
-    data_inicio = st.sidebar.date_input("Data de início:")
-    data_fim = st.sidebar.date_input("Data de fim:")
+    data_inicio = st.date_input("Data de Início")
+    data_fim = st.date_input("Data de Fim")
 
-    # Filtrar os dados de acordo com as seleções do usuário
-    if nome_filtro:
-        filtered_data = existing_data_reservations[existing_data_reservations["Name"] == nome_filtro]
-    else:
-        filtered_data = existing_data_reservations
+    # Filtrar os dados
+    filtered_data = existing_data_reservations.copy()
+
+    if filtro_nome != "Todos":
+        filtered_data = filtered_data[filtered_data["Name"] == filtro_nome]
 
     if data_inicio and data_fim:
+        data_inicio = datetime.combine(data_inicio, datetime.min.time())
+        data_fim = datetime.combine(data_fim, datetime.max.time())
+        filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
         filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
 
     st.write(filtered_data)
