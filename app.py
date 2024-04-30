@@ -48,7 +48,7 @@ if pin_digitado:
 
             st.success("Dados registados com sucesso!")
 
-        if st.button("🍽Saída Manhã"):
+        if st.button("🌮Saída Manhã"):
             # Obter a hora atual
             submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
@@ -64,7 +64,7 @@ if pin_digitado:
 
             st.success("Dados registados com sucesso!")
 
-        if st.button("☀Entrada Tarde"):
+        if st.button("🌄Entrada Tarde"):
             # Obter a hora atual
             submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
