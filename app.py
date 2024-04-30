@@ -5,7 +5,7 @@ import pandas as pd
 
 st.title("Registro")
 
-    existing_data_reservations = load_existing_data("Folha")
+existing_data_reservations = load_existing_data("Folha")
 
     with st.form(key="vendor_form"):
         name = st.text_input(label="Name")
