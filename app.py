@@ -16,21 +16,19 @@ def escrever_numero():
 
     # Ler os dados existentes na aba "Folha"
     existing_data = conn.read(worksheet="Folha", ttl=5)
-    
-    # Verificar se já existem dados na planilha
     if existing_data is None:
         existing_data = pd.DataFrame(columns=["Número", "Timestamp"])
     else:
         existing_data = pd.DataFrame(existing_data)
         
-    # Determinar a próxima linha disponível na planilha
-    if existing_data.empty:
-        next_row_index = 0
-    else:
-        next_row_index = existing_data.index.max() + 1
-        
-    # Adicionar a nova entrada na planilha
-    existing_data.loc[next_row_index] = {"Número": numero, "Timestamp": hora_atual}
+    # Obter a última linha escrita
+    last_row_index = existing_data.shape[0]
+    
+    # Criar um novo registro com o número e o timestamp
+    new_row = {"Número": numero, "Timestamp": hora_atual}
+    
+    # Adicionar o novo registro na próxima linha abaixo da última linha escrita
+    existing_data = existing_data.append(new_row, ignore_index=True)
     
     # Escrever os dados atualizados na planilha
     conn.update(worksheet="Folha", data=existing_data.to_dict(orient="records"))
