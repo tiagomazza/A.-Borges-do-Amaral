@@ -6,6 +6,7 @@ import pandas as pd
 # Conexão com o Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
 
+# Função para escrever o número 1 na planilha do Google Sheets
 def escrever_numero():
     # Definir o número a ser escrito
     numero = 1
@@ -13,12 +14,29 @@ def escrever_numero():
     # Obter a hora atual para registro na planilha
     hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Escrever o número na planilha
-    conn.update(
-        worksheet="Folha",  # Substituir pelo nome da sua planilha
-        data=[{"Número": numero, "Timestamp": hora_atual}]
-    )
+    # Ler os dados existentes na aba "Folha"
+    existing_data = conn.read(worksheet="Folha", ttl=5)
     
+    # Verificar se já existem dados na planilha
+    if existing_data is None:
+        existing_data = pd.DataFrame(columns=["Número", "Timestamp"])
+    else:
+        existing_data = pd.DataFrame(existing_data)
+        
+    # Determinar a próxima linha disponível na planilha
+    if existing_data.empty:
+        next_row_index = 0
+    else:
+        next_row_index = existing_data.index.max() + 1
+        
+    # Adicionar a nova entrada na planilha
+    existing_data.loc[next_row_index] = {"Número": numero, "Timestamp": hora_atual}
+    
+    # Escrever os dados atualizados na planilha
+    conn.update(worksheet="Folha", data=existing_data.to_dict(orient="records"))
+
+    st.success("Número 1 foi escrito na planilha!")
+
 # Interface do Streamlit
 st.title("Aplicativo para Escrever na Planilha")
 
