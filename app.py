@@ -43,4 +43,18 @@ if pin_digitado:
     # Verificar se o PIN está na lista de PINs disponíveis
     if int(pin_digitado) in pins_disponiveis:
         # Obter o nome correspondente ao PIN digitado
-        nome = pins_nomes.loc[pins_nomes
+        nome = pins_nomes.loc[pins_nomes["Pin"] == str(pin_digitado), "Nome"].iloc[0]
+
+        st.write(f"<h1>Bem-vindo, {nome}!</h1>", unsafe_allow_html=True)
+
+        # Botões para as ações de registro
+        if st.button("Entrada Manhã"):
+            escrever_registro(nome, "entrada manhã")
+        if st.button("Saída Manhã"):
+            escrever_registro(nome, "saída manhã")
+        if st.button("Entrada Tarde"):
+            escrever_registro(nome, "entrada tarde")
+        if st.button("Saída Tarde"):
+            escrever_registro(nome, "saída tarde")
+    else:
+        st.warning("PIN inválido. Por favor, digite um PIN válido.")
