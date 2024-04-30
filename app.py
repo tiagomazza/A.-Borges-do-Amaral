@@ -13,12 +13,14 @@ def escrever_numero(nome):
     # Obter a hora atual para registro na planilha
     hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    # Encontrar a última linha preenchida na planilha
+    last_filled_row_index = conn.query(worksheet="Folha", query="select count(A) where A is not null", ttl=5).iloc[0, 0] + 1
+
     # Escrever o número na planilha
-    conn.append(
+    conn.update(
         worksheet="Folha",  # Substituir pelo nome da sua planilha
-        data=[[nome, numero, hora_atual]],
-        start='A1',  # A partir da primeira linha da planilha
-        dimension='ROWS'  # Adiciona como nova linha
+        data=[{"Nome": nome, "Número": numero, "Timestamp": hora_atual}],
+        start=f"A{last_filled_row_index}"
     )
 
     st.success(f"Número 1 foi escrito na planilha para {nome}!")
