@@ -15,7 +15,7 @@ def escrever_numero():
 
     # Escrever o número na planilha
     conn.update(
-        worksheet="Nome_da_sua_planilha",  # Substituir pelo nome da sua planilha
+        worksheet="Folha",  # Substituir pelo nome da sua planilha
         data=[{"Número": numero, "Timestamp": hora_atual}]
     )
 
