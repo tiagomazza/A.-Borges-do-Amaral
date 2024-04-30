@@ -49,4 +49,8 @@ if pin_selecionado:
     if st.button("Entrada Tarde"):
         escrever_registro(nome, "entrada tarde")
     if st.button("Saída Tarde"):
-        escrever_registro(nome, "saída tarde"
+        escrever_registro(nome, "saída tarde")
+elif pin_selecionado == "":
+    st.warning("Por favor, selecione um PIN.")
+else:
+    st.warning("PIN inválido. Por favor, selecione um PIN válido.")
