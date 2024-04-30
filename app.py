@@ -8,7 +8,9 @@ st.title("Registro")
 def load_existing_data(worksheet_name):
     existing_data = conn.read(worksheet=worksheet_name, usecols=list(range(11)), ttl=5)
     return existing_data.dropna(how="all")
-    
+
+conn = st.connection("gsheets", type=GSheetsConnection)
+   
 existing_data_reservations = load_existing_data("Folha")
 
 with st.form(key="vendor_form"):
