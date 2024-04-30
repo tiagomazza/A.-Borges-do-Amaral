@@ -19,7 +19,7 @@ def escrever_registro(nome, acao):
         pin = dados.loc[dados["Nome"] == nome, "Pin"].iloc[0]
         
         # Escrever o nome do botão na planilha
-        last_filled_row_index = conn.query(worksheet="Folha", query="select count(A) where A is not null", ttl=5).iloc[0, 0] + 1
+        last_filled_row_index = len(conn.read(worksheet="Folha", usecols=["Nome"], ttl=5)) + 1
         conn.update(
             worksheet="Folha",
             data=[{"Nome": nome, "Ação": acao, "Timestamp": hora_atual}],
