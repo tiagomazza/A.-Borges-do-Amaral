@@ -3,29 +3,23 @@ from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
 import pandas as pd
 
-# Conexão com o Google Sheets
-conn = st.connection("gsheets", type=GSheetsConnection)
+st.title("Registro")
 
-# Função para escrever o número 1 na planilha do Google Sheets
-def escrever_registro():
-    # Obter a hora atual para registro na planilha
-    hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    existing_data_reservations = load_existing_data("Folha")
 
-    # Escrever o número e o timestamp na planilha
-    existing_data = conn.read(worksheet="Folha", ttl=5)
-    if existing_data is None:
-        existing_data = pd.DataFrame(columns=["Nome", "Horário"])
-    else:
-        existing_data = pd.DataFrame(existing_data)
-        
-    existing_data = existing_data.append({"Nome": 1, "Horário": hora_atual}, ignore_index=True)
-    conn.update(worksheet="Folha", data=existing_data.to_dict(orient="records"))
+    with st.form(key="vendor_form"):
+        name = st.text_input(label="Name")
 
-    st.success("Número e timestamp foram registrados na planilha!")
+        submit_button = st.form_submit_button(label="Submit Details")
+        if submit_button:
+            submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            new_row = {
+                "Name": name,
+            }
 
-# Interface do Streamlit
-st.title("Aplicativo para Registrar na Planilha")
+            new_rows = existing_data_reservations.to_dict(orient="records")
+            new_rows.append(new_row)
 
-# Botão para escrever o número 1 na planilha e registrar o timestamp
-if st.button("Registrar na Planilha"):
-    escrever_registro()
+            conn.update(worksheet="Folha", data=new_rows)
+
+            st.success("Details successfully submitted!")
