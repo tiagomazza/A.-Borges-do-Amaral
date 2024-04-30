@@ -14,45 +14,14 @@ def load_existing_data(worksheet_name):
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
 
-# Função para verificar se o PIN corresponde ao nome do administrador
-def verify_admin_pin(pin):
-    admin_data = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
-    admin_pin = admin_data.loc[admin_data["Nome"] == "admin", "Pin"].iloc[0]
-    return int(float(pin)) == admin_pin
-
-# Função para realizar a autenticação do PIN
-def authenticate_pin(pin):
-    dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
-    if int(float(pin)) in dados["Pin"].tolist():
-        return dados.loc[dados["Pin"] == int(float(pin)), "Nome"].iloc[0]
-    else:
-        return None
-
 # Página de login
 def login_page():
     st.title("Login")
     pin = st.text_input("Digite o seu PIN:", type="password")
     if pin:
-        if verify_admin_pin(pin):
-            st.success("Login bem-sucedido!")
-            return "admin_page"
-        elif authenticate_pin(pin):
-            st.success("Login bem-sucedido!")
-            return "welcome_page"
-        else:
-            st.warning("PIN incorreto. Por favor, digite um PIN válido.")
-    return None
-
-# Página de boas-vindas
-def welcome_page():
-    st.title("Bem-vindo")
-    pin = st.text_input("Digite o seu PIN:", type="password")
-    if pin:
         if authenticate_pin(pin):
             nome = authenticate_pin(pin)
-            st.write(f"😀 Bem-vindo, {nome}!")
-            # Adicionar espaço entre a mensagem de boas-vindas e os botões
-            st.write("")
+            st.success(f"Bem-vindo, {nome}!")
             return "buttons_page"
         else:
             st.warning("PIN incorreto. Por favor, digite um PIN válido.")
@@ -86,11 +55,36 @@ def register_button_click(button_name):
     conn.update(worksheet="Folha", data=new_rows)
     st.success("Dados registrados com sucesso!")
 
+# Página do relatório
+def report_page():
+    st.title("Relatório")
+    # Filtrar os dados por nome e datas
+    nome_filtro = st.sidebar.text_input("Filtrar por nome:")
+    data_inicio = st.sidebar.date_input("Data de início:")
+    data_fim = st.sidebar.date_input("Data de fim:")
+    if data_inicio > data_fim:
+        st.error("A data de início não pode ser posterior à data de fim.")
+    else:
+        filtered_data = existing_data_reservations.copy()
+        if nome_filtro:
+            filtered_data = filtered_data[filtered_data["Name"].str.contains(nome_filtro)]
+        if data_inicio and data_fim:
+            filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
+        st.write(filtered_data)
+
+# Função para verificar se o PIN corresponde ao nome do usuário
+def authenticate_pin(pin):
+    dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
+    if int(float(pin)) in dados["Pin"].tolist():
+        return dados.loc[dados["Pin"] == int(float(pin)), "Nome"].iloc[0]
+    else:
+        return None
+
 # Definir as páginas
 pages = {
     "login_page": login_page,
-    "welcome_page": welcome_page,
-    "buttons_page": buttons_page
+    "buttons_page": buttons_page,
+    "report_page": report_page
 }
 
 # Verificar a página atual
