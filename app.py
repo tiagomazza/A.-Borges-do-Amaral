@@ -14,10 +14,6 @@ def load_existing_data(worksheet_name):
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
 
-# Carregar os nomes dos dados da aba "Dados"
-dados = conn.read(worksheet="Dados", usecols=["Nome"], ttl=5)
-nomes_disponiveis = dados["Nome"].unique()
-
 pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas"])
 
 # Determinar qual página exibir com base na seleção do usuário
