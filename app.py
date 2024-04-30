@@ -6,40 +6,31 @@ import pandas as pd
 # Conexão com o Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# Função para escrever o nome do botão na planilha do Google Sheets
-def escrever_registro(nome, acao):
+# Função para escrever o número 1 na planilha do Google Sheets
+def escrever_numero():
+    # Definir o número a ser escrito
+    numero = 1
+    
     # Obter a hora atual para registro na planilha
     hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    # Ler os dados existentes da aba "Folha"
-    existing_data = conn.read(worksheet="Folha", ttl=5)
-    
-    # Verificar se existem dados na planilha
-    if existing_data is None:
-        # Se não houver dados, começar do índice 0
-        last_index = 0
-        existing_data = []
-    else:
-        # Obter o índice da última linha
-        last_index = len(existing_data)
 
-    
-    # Preparar os novos dados a serem adicionados
-    new_data = {"Nome": nome, "Ação": acao, "Timestamp": hora_atual}
-    
-    # Adicionar a nova entrada aos dados existentes
-    existing_data = existing_data.append(new_data, ignore_index=True)
-    
-    # Atualizar a planilha com os dados atualizados
+    # Escrever o número na planilha
+    existing_data = conn.read(worksheet="Folha", ttl=5)
+    if existing_data is None:
+        existing_data = pd.DataFrame(columns=["Número", "Timestamp"])
+    else:
+        existing_data = pd.DataFrame(existing_data)
+        
+    existing_data = existing_data.append({"Número": numero, "Timestamp": hora_atual}, ignore_index=True)
     conn.update(worksheet="Folha", data=existing_data.to_dict(orient="records"))
-    
-    st.success(f"Registro de '{acao}' realizado para {nome}!")
+
+    st.success("Número 1 foi escrito na planilha!")
 
 # Interface do Streamlit
-st.title("Registro de Ponto")
+st.title("Aplicativo para Escrever na Planilha")
 
 # Adicionar campo de PIN
-pin_digitado = st.text_input("Digite o seu PIN:")
+pin_digitado = st.text_input("Digite o seu PIN:", type="password")
 
 # Verificar se o PIN foi digitado
 if pin_digitado:
@@ -48,20 +39,12 @@ if pin_digitado:
     
     # Verificar se o PIN está na lista de PINs válidos
     if int(float(pin_digitado)) in dados["Pin"].tolist():
-        nome = dados.loc[dados["Pin"] == int(float(pin_digitado)), "Nome"].iloc[0]
-        
         # Dar as boas-vindas utilizando o nome correspondente
+        nome = dados.loc[dados["Pin"] == int(float(pin_digitado)), "Nome"].iloc[0]
         st.write(f"Bem-vindo, {nome}!")
         
-        st.subheader("Botões disponíveis:")
-        
-        # Botões para registrar as ações
-        if st.button("Entrada Manhã"):
-            escrever_registro(nome, "Entrada Manhã")
-        if st.button("Saída Manhã"):
-            escrever_registro(nome, "Saída Manhã")
-        if st.button("Entrada Tarde"):
-            escrever_registro(nome, "Entrada Tarde")
-        if st.button("Saída Tarde"):
-            escrever_registro(nome, "Saída Tarde")
- 
+        # Botão para escrever o número 1 na planilha quando clicado
+        if st.button("Registrar Número 1 na Planilha"):
+            escrever_numero()
+    else:
+        st.warning("PIN incorreto. Por favor, digite um PIN válido.")
