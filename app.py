@@ -7,9 +7,16 @@ import pandas as pd
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 def escrever_numero():
-    sheet.update_cell(1, 1, '1')
-    st.write("Número 1 foi escrito na planilha!")
-    st.success("Número 1 foi escrito na planilha!")
+    # Definir o número a ser escrito
+    numero = 1
+    
+    # Obter a hora atual para registro na planilha
+    hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Escrever o número na planilha
+    conn.update(
+        worksheet="Folha",  # Substituir pelo nome da sua planilha
+        data=[{"Número": numero, "Timestamp": hora_atual}]
 
 # Interface do Streamlit
 st.title("Aplicativo para Escrever na Planilha")
