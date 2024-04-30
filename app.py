@@ -5,17 +5,6 @@ from datetime import datetime
 # Conexão com o Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# Função para buscar o nome pelo PIN no Google Sheets
-def obter_nome_por_pin(pin_digitado):
-    # Ler os dados do Google Sheets
-    dados = conn.read("Dados", ttl=3600)  # Substitua "Dados" pelo nome da sua planilha
-
-    # Procurar o PIN na coluna "Pin" e retornar o nome correspondente da coluna "Nomes"
-    nome = dados[dados["Pin"] == pin_digitado]["Nome"].values.tolist()
-    
-    # Retorna o nome se encontrado, senão retorna uma string vazia
-    return nome[0] if nome else ""
-
 # Função para escrever o número 1 na planilha do Google Sheets
 def escrever_numero(nome, botao, hora):
     # Definir o número a ser escrito
@@ -27,7 +16,7 @@ def escrever_numero(nome, botao, hora):
 
     # Escrever o número na planilha junto com outras informações
     conn.update(
-        worksheet="Folha",  # Substitua pelo nome da sua planilha
+        worksheet="Folha",  # Substituir pelo nome da sua planilha
         data=[{"Nome": nome, "Botao": botao, "Numero": numero, "Timestamp": hora}]
     )
 
@@ -36,30 +25,31 @@ def escrever_numero(nome, botao, hora):
 # Interface do Streamlit
 st.title("Registo de Ponto")
 
-# Obtendo a senha dos segredos
-senha_secreta = st.secrets["senhas"]["senha2"]
+# Obtendo a lista de PINs e nomes do Google Sheets
+pins_nomes = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
+pins_nomes = pins_nomes.dropna(subset=["Pin", "Nome"])  # Remover linhas com valores ausentes
 
-# Adicionar campo de senha
-senha_digitada = st.text_input("Digite o seu pin:", type="password")
+# Obtendo a lista de PINs disponíveis
+pins_disponiveis = pins_nomes["Pin"].tolist()
 
-# Verificar se o PIN está correto e obter o nome correspondente
-if senha_digitada == senha_secreta:
-    st.subheader("Registar Ponto:")
+# Adicionar campo de seleção de PIN
+pin_selecionado = st.selectbox("Selecione o seu PIN:", options=[""] + pins_disponiveis)
 
-    # Buscar o nome pelo PIN
-    nome = obter_nome_por_pin(senha_digitada)
+# Verificar se o PIN foi selecionado
+if pin_selecionado:
+    # Obter o nome correspondente ao PIN selecionado
+    nome = pins_nomes.loc[pins_nomes["Pin"] == pin_selecionado, "Nome"].iloc[0]
 
-    if nome:
-        st.write(f"Bem-vindo, {nome}!")
+    st.write(f"Bem-vindo, {nome}!")
 
-        # Campos de entrada para o botão e hora
-        botao = st.selectbox("Botão:", ["Opção 1", "Opção 2", "Opção 3", "Opção 4"])
-        hora = st.text_input("Hora (Opcional):", value="", help="Formato: YYYY-MM-DD HH:MM:SS")
+    # Campos de entrada para o botão e hora
+    botao = st.selectbox("Botão:", ["Opção 1", "Opção 2", "Opção 3", "Opção 4"])
+    hora = st.text_input("Hora (Opcional):", value="", help="Formato: YYYY-MM-DD HH:MM:SS")
 
-        # Botão para efetuar o registo quando clicado
-        if st.button("Efetuar Registo"):
-            escrever_numero(nome, botao, hora)
-    else:
-        st.warning("PIN não encontrado.")
+    # Botão para efetuar o registo quando clicado
+    if st.button("Efetuar Registo"):
+        escrever_numero(nome, botao, hora)
+elif pin_selecionado == "":
+    st.warning("Por favor, selecione um PIN.")
 else:
-    st.warning("PIN incorreto. Por favor, tente novamente.")
+    st.warning("PIN inválido. Por favor, selecione um PIN válido.")
