@@ -13,13 +13,9 @@ def escrever_registro(nome, acao):
     # Obter a hora atual para registro na planilha
     hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Encontrar a última linha vazia na planilha
-    last_row = conn.read("Folha").shape[0] + 1
-
-    # Escrever na última linha vazia na planilha junto com outras informações
+    # Escrever na planilha junto com outras informações
     conn.update(
         worksheet="Folha",  # Substituir pelo nome da sua planilha
-        start=f"A{last_row}",
         data=[{"Nome": nome, "Ação": acao, "Timestamp": hora_atual}]
     )
 
@@ -28,20 +24,22 @@ def escrever_registro(nome, acao):
 # Interface do Streamlit
 st.title("Registo de Ponto")
 
-# Obtendo a lista de PINs e nomes do Google Sheets e convertendo em string
+# Obtendo a lista de PINs e nomes do Google Sheets
 pins_nomes = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
 pins_nomes = pins_nomes.dropna(subset=["Pin", "Nome"])  # Remover linhas com valores ausentes
-pins_disponiveis = ", ".join(map(str, pins_nomes["Pin"].tolist()))
 
-# Adicionar campo para digitar o PIN
-pin_digitado = st.text_input("Digite o seu PIN:", type="password")
+# Obtendo a lista de PINs disponíveis (considerando apenas os dados antes do ".")
+pins_nomes["Pin"] = pins_nomes["Pin"].apply(lambda x: str(x).split(".")[0])
+
+# Adicionar campo de entrada de PIN
+pin_digitado = st.text_input("Digite o seu PIN:")
 
 # Verificar se o PIN foi digitado
 if pin_digitado:
-    # Verificar se o PIN está na lista de PINs disponíveis
-    if pin_digitado in pins_nomes["Pin"].astype(str).values or pin_digitado == "1234":
+    # Verificar se o PIN é válido
+    if pin_digitado in pins_nomes["Pin"].tolist():
         # Obter o nome correspondente ao PIN digitado
-        nome = pins_nomes.loc[pins_nomes["Pin"].astype(str) == pin_digitado, "Nome"].iloc[0]
+        nome = pins_nomes.loc[pins_nomes["Pin"] == pin_digitado, "Nome"].iloc[0]
 
         st.write(f"<h1>Bem-vindo, {nome}!</h1>", unsafe_allow_html=True)
 
@@ -55,4 +53,4 @@ if pin_digitado:
         if st.button("Saída Tarde"):
             escrever_registro(nome, "saída tarde")
     else:
-        st.warning(f"PIN inválido. Por favor, digite um PIN válido. PINs disponíveis: {pins_disponiveis}")
+        st.warning("PIN inválido. Por favor, digite um PIN válido.")
