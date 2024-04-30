@@ -13,14 +13,22 @@ def escrever_registro(nome, acao):
     # Ler os dados existentes da aba "Folha"
     existing_data = conn.read(worksheet="Folha", ttl=5)
     
+    # Verificar se já existem dados
+    if existing_data:
+        # Obter o índice da última linha
+        last_index = len(existing_data)
+    else:
+        # Se não houver dados, começar do índice 0
+        last_index = 0
+    
     # Preparar os novos dados a serem adicionados
     new_data = {"Nome": nome, "Ação": acao, "Timestamp": hora_atual}
     
     # Adicionar a nova entrada aos dados existentes
     existing_data.append(new_data)
     
-    # Atualizar a planilha com todas as informações, ignorando o índice
-    conn.update(worksheet="Folha", data=existing_data, ignore_index=True)
+    # Atualizar a planilha com os dados atualizados
+    conn.update(worksheet="Folha", data=existing_data, start=f"A{last_index+1}")
     
     st.success(f"Registro de '{acao}' realizado para {nome}!")
 
