@@ -5,33 +5,33 @@ from datetime import datetime
 # Conexão com o Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# Função para escrever na planilha do Google Sheets
-def escrever_registro(nome, acao):
-    # Obter o timestamp atual
-    timestamp_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+# Função para escrever o número 1 na planilha do Google Sheets
+def escrever_numero():
+    # Definir o número a ser escrito
+    numero = 1
     
-    # Ler os dados existentes da aba "Dados" para encontrar o nome correspondente ao PIN inserido
-    dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
-    
-    # Encontrar o nome correspondente ao PIN inserido
-    nome = dados.loc[dados["Pin"] == int(pin_digitado), "Nome"].iloc[0]
+    # Obter a hora atual para registro na planilha
+    hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    st.success(f"Registro de '{acao}' para '{nome}' efetuado com sucesso!")
+    # Escrever o número na planilha
+    conn.update(
+        worksheet="Folha",  # Substituir pelo nome da sua planilha
+        data=[{"Número": numero, "Timestamp": hora_atual}]
+    )
+
+    st.success("Número 1 foi escrito na planilha!")
 
 # Interface do Streamlit
-st.title("Registo de Ponto")
+st.title("Aplicativo para Escrever na Planilha")
 
-# Adicionar campo de entrada de PIN
-pin_digitado = st.text_input("Digite o seu PIN:")
+# Adicionar campo de senha
+senha = st.text_input("Digite a senha:", type="password")
 
-# Verificar se o PIN foi digitado
-if pin_digitado:
-    # Botões para as ações de registro
-    if st.button("Entrada Manhã"):
-        escrever_registro(pin_digitado, "Entrada Manhã")
-    if st.button("Saída Manhã"):
-        escrever_registro(pin_digitado, "Saída Manhã")
-    if st.button("Entrada Tarde"):
-        escrever_registro(pin_digitado, "Entrada Tarde")
-    if st.button("Saída Tarde"):
-        escrever_registro(pin_digitado, "Saída Tarde")
+# Verificar se a senha está correta
+if senha == "senha_correta":
+    st.subheader("Botões disponíveis:")
+    # Botão para escrever o número 1 na planilha quando clicado
+    if st.button("Escrever Número 1 na Planilha"):
+        escrever_numero()
+else:
+    st.warning("Senha incorreta. Por favor, tente novamente.")
