@@ -13,17 +13,14 @@ def escrever_registro(nome, acao):
     # Obter a hora atual para registro na planilha
     hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Obter a planilha
-    worksheet = conn.read("Folha", ttl=5)
+    # Obter a última linha vazia de cima para baixo
+    ultima_linha_vazia = conn.read("Folha").shape[0] + 1
 
-    # Encontrar a última linha vazia de cima para baixo
-    ultima_linha_vazia = worksheet.index[-1] + 2 if not worksheet.empty else 2
-
-    # Escrever na planilha na última linha vazia
+    # Escrever na planilha junto com outras informações na última linha vazia
     conn.update(
         worksheet="Folha",  # Substituir pelo nome da sua planilha
         data=[{"Nome": nome, "Ação": acao, "Timestamp": hora_atual}],
-        start=ultima_linha_vazia
+        row=ultima_linha_vazia
     )
 
     st.success(f"Registro de '{acao}' efetuado com sucesso!")
@@ -36,7 +33,7 @@ pins_nomes = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
 pins_nomes = pins_nomes.dropna(subset=["Pin", "Nome"])  # Remover linhas com valores ausentes
 
 # Obtendo a lista de PINs disponíveis
-pins_disponiveis = pins_nomes["Pin"].astype(str).tolist()  # Convertendo para string
+pins_disponiveis = [str(int(pin)) for pin in pins_nomes["Pin"].tolist()]  # Convertendo para string inteiros
 
 # Adicionar campo para digitar o PIN
 pin_digitado = st.text_input("Digite o seu PIN:", type="password")
