@@ -16,14 +16,6 @@ def escrever_registro(nome, acao):
     # Encontrar o nome correspondente ao PIN inserido
     nome = dados.loc[dados["Pin"] == int(pin_digitado), "Nome"].iloc[0]
 
-    # Escrever os dados na planilha
-    conn.append(
-        worksheet="Folha",
-        data=[[nome, acao, timestamp_atual]],
-        start='A1',  # A partir da primeira linha da planilha
-        dimension='ROWS'  # Adiciona como nova linha
-    )
-
     st.success(f"Registro de '{acao}' para '{nome}' efetuado com sucesso!")
 
 # Interface do Streamlit
