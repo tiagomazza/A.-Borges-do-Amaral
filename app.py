@@ -21,42 +21,26 @@ with st.form(key="vendor_form"):
     name = st.text_input(label="Name")
 
     # Adicionar 4 botões adicionais
-    button_pressed = None
-    if st.button("Button 1"):
-        button_pressed = "Button 1"
-    elif st.button("Button 2"):
-        button_pressed = "Button 2"
-    elif st.button("Button 3"):
-        button_pressed = "Button 3"
-    elif st.button("Button 4"):
-        button_pressed = "Button 4"
+    button1_clicked = st.form_submit_button(label="Button 1")
+    button2_clicked = st.form_submit_button(label="Button 2")
+    button3_clicked = st.form_submit_button(label="Button 3")
+    button4_clicked = st.form_submit_button(label="Button 4")
+
+    # Obter o nome do botão clicado
+    if button1_clicked:
+        button_name = "Button 1"
+    elif button2_clicked:
+        button_name = "Button 2"
+    elif button3_clicked:
+        button_name = "Button 3"
+    elif button4_clicked:
+        button_name = "Button 4"
+    else:
+        button_name = None
 
     # Submeter o formulário
-    submit_button = st.form_submit_button(label="Submit Details")
-    if submit_button:
-        if button_pressed:
+    if st.form_submit_button(label="Submit Details"):
+        # Verificar se algum botão foi clicado
+        if button_name:
             # Obter o timestamp atual
-            submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            # Criar nova linha com o nome do botão e o timestamp
-            new_row = {
-                "Name": button_pressed,
-                "Timestamp": submission_datetime
-            }
-        else:
-            # Criar nova linha com o nome inserido e o timestamp
-            submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            new_row = {
-                "Name": name,
-                "Timestamp": submission_datetime
-            }
-
-        # Adicionar a nova linha aos dados existentes
-        new_rows = existing_data_reservations.to_dict(orient="records")
-        new_rows.append(new_row)
-
-        # Atualizar a planilha com os novos dados
-        conn.update(worksheet="Folha", data=new_rows)
-
-        # Exibir mensagem de sucesso
-        st.success("Details successfully submitted!")
+            submission_datetime = datetime.now().strft
