@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
+import pandas as pd
 
 # Conexão com o Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
@@ -21,15 +22,16 @@ def escrever_registro(nome, acao):
     else:
         # Obter o índice da última linha
         last_index = len(existing_data)
+>>>>>>> 6c775522eb3383aecd99c2f0170bbea03ee4cd5e
     
     # Preparar os novos dados a serem adicionados
     new_data = {"Nome": nome, "Ação": acao, "Timestamp": hora_atual}
     
     # Adicionar a nova entrada aos dados existentes
-    existing_data.append(new_data)
+    existing_data = existing_data.append(new_data, ignore_index=True)
     
     # Atualizar a planilha com os dados atualizados
-    conn.update(worksheet="Folha", data=existing_data, start=f"A{last_index+1}")
+    conn.update(worksheet="Folha", data=existing_data.to_dict(orient="records"))
     
     st.success(f"Registro de '{acao}' realizado para {nome}!")
 
@@ -62,5 +64,4 @@ if pin_digitado:
             escrever_registro(nome, "Entrada Tarde")
         if st.button("Saída Tarde"):
             escrever_registro(nome, "Saída Tarde")
-    else:
-        st.warning("PIN incorreto. Por favor, digite um PIN válido.")
+ 
