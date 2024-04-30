@@ -10,25 +10,19 @@ def escrever_registro(nome, acao):
     # Obter a hora atual para registro na planilha
     hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # Ler os dados da aba "Dados" para encontrar o PIN correspondente ao nome inserido
-    dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
+    # Ler os dados existentes da aba "Folha"
+    existing_data = conn.read(worksheet="Folha", ttl=5)
     
-    # Verificar se o nome está na lista de nomes válidos
-    if nome in dados["Nome"].tolist():
-        # Obter o PIN correspondente ao nome inserido
-        pin = dados.loc[dados["Nome"] == nome, "Pin"].iloc[0]
-        
-        # Escrever o nome do botão na planilha
-        last_filled_row_index = len(conn.read(worksheet="Folha", usecols=["Nome"], ttl=5)) + 1
-        conn.update(
-            worksheet="Folha",
-            data=[{"Nome": nome, "Ação": acao, "Timestamp": hora_atual}],
-            start=f"A{last_filled_row_index}"
-        )
-        
-        st.success(f"Registro de '{acao}' realizado para {nome}!")
-    else:
-        st.warning("Nome não encontrado. Por favor, insira um nome válido.")
+    # Preparar os novos dados a serem adicionados
+    new_data = {"Nome": nome, "Ação": acao, "Timestamp": hora_atual}
+    
+    # Adicionar a nova entrada aos dados existentes
+    existing_data.append(new_data)
+    
+    # Atualizar a planilha com todas as informações
+    conn.update(worksheet="Folha", data=existing_data)
+    
+    st.success(f"Registro de '{acao}' realizado para {nome}!")
 
 # Interface do Streamlit
 st.title("Registro de Ponto")
