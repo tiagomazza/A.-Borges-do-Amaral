@@ -7,19 +7,19 @@ st.title("Registro")
 
 existing_data_reservations = load_existing_data("Folha")
 
-    with st.form(key="vendor_form"):
-        name = st.text_input(label="Name")
+with st.form(key="vendor_form"):
+    name = st.text_input(label="Name")
 
-        submit_button = st.form_submit_button(label="Submit Details")
-        if submit_button:
-            submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            new_row = {
-                "Name": name,
-            }
+    submit_button = st.form_submit_button(label="Submit Details")
+    if submit_button:
+        submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        new_row = {
+            "Name": name,
+        }
 
-            new_rows = existing_data_reservations.to_dict(orient="records")
-            new_rows.append(new_row)
+        new_rows = existing_data_reservations.to_dict(orient="records")
+        new_rows.append(new_row)
 
-            conn.update(worksheet="Folha", data=new_rows)
+        conn.update(worksheet="Folha", data=new_rows)
 
-            st.success("Details successfully submitted!")
+        st.success("Details successfully submitted!")
