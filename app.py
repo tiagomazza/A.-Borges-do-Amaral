@@ -3,7 +3,7 @@ from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
 import pandas as pd
 
-st.title("Registro de Ponto")
+st.title("📝Registro de Ponto")
 
 # Conexão com o Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
@@ -29,15 +29,15 @@ if pin_digitado:
         nome = dados.loc[dados["Pin"] == int(float(pin_digitado)), "Nome"].iloc[0]
         
         # Dar as boas-vindas utilizando o nome correspondente
-        st.write(f"Bem-vindo, {nome}!")
+        st.write(f"😀Bem-vindo, {nome}!")
 
         # Botões para cada tipo de registro
-        if st.button("Button 1"):
+        if st.button("☕Entrada Manhã"):
             # Obter a hora atual
             submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             # Criar nova linha com nome, botão e hora
-            new_row = {"Name": nome, "Button": "Button 1", "SubmissionDateTime": submission_datetime}
+            new_row = {"Name": nome, "Button": "Entrada Manhã", "SubmissionDateTime": submission_datetime}
 
             # Adicionar nova linha aos dados existentes
             new_rows = existing_data_reservations.to_dict(orient="records")
@@ -46,14 +46,14 @@ if pin_digitado:
             # Atualizar a planilha com os novos dados
             conn.update(worksheet="Folha", data=new_rows)
 
-            st.success("Details successfully submitted!")
+            st.success("Dados registados com sucesso!")
 
-        if st.button("Button 2"):
+        if st.button("🍽Saída Manhã"):
             # Obter a hora atual
             submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             # Criar nova linha com nome, botão e hora
-            new_row = {"Name": nome, "Button": "Button 2", "SubmissionDateTime": submission_datetime}
+            new_row = {"Name": nome, "Button": "Saída Manhã", "SubmissionDateTime": submission_datetime}
 
             # Adicionar nova linha aos dados existentes
             new_rows = existing_data_reservations.to_dict(orient="records")
@@ -62,14 +62,14 @@ if pin_digitado:
             # Atualizar a planilha com os novos dados
             conn.update(worksheet="Folha", data=new_rows)
 
-            st.success("Details successfully submitted!")
+            st.success("Dados registados com sucesso!")
 
-        if st.button("Button 3"):
+        if st.button("☀Entrada Tarde"):
             # Obter a hora atual
             submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             # Criar nova linha com nome, botão e hora
-            new_row = {"Name": nome, "Button": "Button 3", "SubmissionDateTime": submission_datetime}
+            new_row = {"Name": nome, "Button": "Entrada Tarde", "SubmissionDateTime": submission_datetime}
 
             # Adicionar nova linha aos dados existentes
             new_rows = existing_data_reservations.to_dict(orient="records")
@@ -78,14 +78,14 @@ if pin_digitado:
             # Atualizar a planilha com os novos dados
             conn.update(worksheet="Folha", data=new_rows)
 
-            st.success("Details successfully submitted!")
+            st.success("Dados registados com sucesso!")
 
-        if st.button("Button 4"):
+        if st.button("😴Saída Tarde"):
             # Obter a hora atual
             submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             
             # Criar nova linha com nome, botão e hora
-            new_row = {"Name": nome, "Button": "Button 4", "SubmissionDateTime": submission_datetime}
+            new_row = {"Name": nome, "Button": "Saída Tarde", "SubmissionDateTime": submission_datetime}
 
             # Adicionar nova linha aos dados existentes
             new_rows = existing_data_reservations.to_dict(orient="records")
@@ -94,7 +94,7 @@ if pin_digitado:
             # Atualizar a planilha com os novos dados
             conn.update(worksheet="Folha", data=new_rows)
 
-            st.success("Details successfully submitted!")
+            st.success("Dados registados com sucesso!")
 
     else:
         st.warning("PIN incorreto. Por favor, digite um PIN válido.")
