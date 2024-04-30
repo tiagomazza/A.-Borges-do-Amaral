@@ -16,12 +16,11 @@ def escrever_registro(nome, acao):
     # Ler os dados existentes da planilha
     existing_data = conn.read(worksheet="Folha", usecols=["Nome", "Ação", "Timestamp"], ttl=5)
 
-    # Encontrar a última linha vazia
-    last_empty_row_index = len(existing_data) if existing_data.empty else existing_data.index[-1] + 1
+    # Adicionar o novo registro aos dados existentes
+    new_data = existing_data.append({"Nome": nome, "Ação": acao, "Timestamp": hora_atual}, ignore_index=True)
 
-    # Adicionar o novo registro à última linha vazia
-    new_data = {"Nome": nome, "Ação": acao, "Timestamp": hora_atual}
-    conn.update(worksheet="Folha", data=[new_data], start=f"A{last_empty_row_index}")
+    # Escrever os dados atualizados na planilha
+    conn.update(worksheet="Folha", data=new_data)
 
     st.success(f"Registro de '{acao}' efetuado com sucesso!")
 
