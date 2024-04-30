@@ -36,4 +36,12 @@ if pin_digitado:
     
     # Verificar se o PIN está na lista de PINs válidos
     if int(pin_digitado) in dados["Pin"].tolist():
-        nome = dados.loc[dados["Pin"] ==
+        nome = dados.loc[dados["Pin"] == int(pin_digitado), "Nome"].iloc[0]
+        
+        st.subheader("Botões disponíveis:")
+        
+        # Botão para escrever o número 1 na planilha quando clicado
+        if st.button("Escrever Número 1 na Planilha"):
+            escrever_numero(nome)
+    else:
+        st.warning("PIN incorreto. Por favor, digite um PIN válido.")
