@@ -21,26 +21,35 @@ with st.form(key="vendor_form"):
     name = st.text_input(label="Name")
 
     # Adicionar 4 botões adicionais
+    button_pressed = None
     if st.button("Button 1"):
-        name = "Button 1"
+        button_pressed = "Button 1"
     elif st.button("Button 2"):
-        name = "Button 2"
+        button_pressed = "Button 2"
     elif st.button("Button 3"):
-        name = "Button 3"
+        button_pressed = "Button 3"
     elif st.button("Button 4"):
-        name = "Button 4"
+        button_pressed = "Button 4"
 
     # Submeter o formulário
     submit_button = st.form_submit_button(label="Submit Details")
     if submit_button:
-        # Obter o timestamp atual
-        submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if button_pressed:
+            # Obter o timestamp atual
+            submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # Criar nova linha com o nome do botão e o timestamp
-        new_row = {
-            "Name": name,
-            "Timestamp": submission_datetime
-        }
+            # Criar nova linha com o nome do botão e o timestamp
+            new_row = {
+                "Name": button_pressed,
+                "Timestamp": submission_datetime
+            }
+        else:
+            # Criar nova linha com o nome inserido e o timestamp
+            submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            new_row = {
+                "Name": name,
+                "Timestamp": submission_datetime
+            }
 
         # Adicionar a nova linha aos dados existentes
         new_rows = existing_data_reservations.to_dict(orient="records")
