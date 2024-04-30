@@ -19,8 +19,8 @@ def escrever_registro(nome, acao):
     # Adicionar a nova entrada aos dados existentes
     existing_data.append(new_data)
     
-    # Atualizar a planilha com todas as informações
-    conn.update(worksheet="Folha", data=existing_data)
+    # Atualizar a planilha com todas as informações, ignorando o índice
+    conn.update(worksheet="Folha", data=existing_data, ignore_index=True)
     
     st.success(f"Registro de '{acao}' realizado para {nome}!")
 
