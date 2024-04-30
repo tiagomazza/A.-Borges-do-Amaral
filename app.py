@@ -22,7 +22,7 @@ def escrever_registro(nome, acao):
     else:
         # Obter o índice da última linha
         last_index = len(existing_data)
->>>>>>> 6c775522eb3383aecd99c2f0170bbea03ee4cd5e
+
     
     # Preparar os novos dados a serem adicionados
     new_data = {"Nome": nome, "Ação": acao, "Timestamp": hora_atual}
