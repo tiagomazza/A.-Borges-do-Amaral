@@ -14,6 +14,10 @@ def load_existing_data(worksheet_name):
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
 
+# Carregar os nomes dos dados da aba "Dados"
+dados = conn.read(worksheet="Dados", usecols=["Nome"], ttl=5)
+nomes_disponiveis = dados["Nome"].unique()
+
 pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas"])
 
 # Determinar qual página exibir com base na seleção do usuário
@@ -61,7 +65,7 @@ else:
     data_fim = st.sidebar.date_input("Data de fim:")
     
     # Filtro por nome
-    nome_filtro = st.sidebar.text_input("Filtrar por nome:")
+    nome_filtro = st.sidebar.selectbox("Filtrar por nome:", nomes_disponiveis)
 
     # Converter as strings de data para objetos datetime.date
     data_inicio = datetime.combine(data_inicio, datetime.min.time()) if data_inicio else None
