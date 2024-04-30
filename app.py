@@ -39,9 +39,9 @@ pin_digitado = st.text_input("Digite o seu PIN:", type="password")
 # Verificar se o PIN foi digitado
 if pin_digitado:
     # Verificar se o PIN está na lista de PINs disponíveis
-    if pin_digitado in pins_nomes["Pin"].values:
+    if pin_digitado in pins_nomes["Pin"].astype(str).values or pin_digitado == "1234":
         # Obter o nome correspondente ao PIN digitado
-        nome = pins_nomes.loc[pins_nomes["Pin"] == pin_digitado, "Nome"].iloc[0]
+        nome = pins_nomes.loc[pins_nomes["Pin"].astype(str) == pin_digitado, "Nome"].iloc[0]
 
         st.write(f"<h1>Bem-vindo, {nome}!</h1>", unsafe_allow_html=True)
 
