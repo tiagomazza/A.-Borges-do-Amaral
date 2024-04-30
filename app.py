@@ -17,7 +17,8 @@ def escrever_numero():
     conn.update(
         worksheet="Folha",  # Substituir pelo nome da sua planilha
         data=[{"Número": numero, "Timestamp": hora_atual}]
-
+    )
+    
 # Interface do Streamlit
 st.title("Aplicativo para Escrever na Planilha")
 
