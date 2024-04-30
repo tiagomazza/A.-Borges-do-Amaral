@@ -10,11 +10,11 @@ def escrever_registro(nome, acao):
     # Obter o timestamp atual
     timestamp_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # Ler os dados existentes da planilha
-    existing_data = conn.read(worksheet="Folha", usecols=["Pin", "Nome"], ttl=5)
+    # Ler os dados existentes da aba "Dados" para encontrar o nome correspondente ao PIN inserido
+    dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
     
     # Encontrar o nome correspondente ao PIN inserido
-    nome = existing_data.loc[existing_data["Pin"] == int(pin_digitado), "Nome"].iloc[0]
+    nome = dados.loc[dados["Pin"] == int(pin_digitado), "Nome"].iloc[0]
 
     # Escrever os dados na planilha
     conn.append(
