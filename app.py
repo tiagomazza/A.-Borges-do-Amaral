@@ -37,7 +37,7 @@ if senha_digitada == senha_secreta:
 
     # Dicionário com pin como chave e nome como valor
     pin_para_nome = {
-        "pin1": "Nome1",
+        "4321": "Nome1",
         "pin2": "Nome2",
         "pin3": "Nome3",
         # Adicione mais pares pin-nome conforme necessário
