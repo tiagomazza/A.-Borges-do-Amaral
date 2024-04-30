@@ -31,26 +31,26 @@ pins_nomes = pins_nomes.dropna(subset=["Pin", "Nome"])  # Remover linhas com val
 # Obtendo a lista de PINs disponíveis
 pins_disponiveis = pins_nomes["Pin"].tolist()
 
-# Adicionar campo de seleção de PIN
-pin_selecionado = st.selectbox("PIN:", options=[""] + pins_disponiveis, format_func=lambda x: "" if x == "" else "*")
+# Adicionar campo para digitar o PIN
+pin_digitado = st.text_input("Digite o seu PIN:", type="password")
 
-# Verificar se o PIN foi selecionado
-if pin_selecionado:
-    # Obter o nome correspondente ao PIN selecionado
-    nome = pins_nomes.loc[pins_nomes["Pin"] == pin_selecionado, "Nome"].iloc[0]
+# Verificar se o PIN foi digitado
+if pin_digitado:
+    # Verificar se o PIN está na lista de PINs disponíveis
+    if pin_digitado in pins_disponiveis:
+        # Obter o nome correspondente ao PIN digitado
+        nome = pins_nomes.loc[pins_nomes["Pin"] == pin_digitado, "Nome"].iloc[0]
 
-    st.write(f"<h1>Bem-vindo, {nome}!</h1>", unsafe_allow_html=True)
+        st.write(f"<h1>Bem-vindo, {nome}!</h1>", unsafe_allow_html=True)
 
-    # Botões para as ações de registro
-    if st.button("Entrada Manhã"):
-        escrever_registro(nome, "entrada manhã")
-    if st.button("Saída Manhã"):
-        escrever_registro(nome, "saída manhã")
-    if st.button("Entrada Tarde"):
-        escrever_registro(nome, "entrada tarde")
-    if st.button("Saída Tarde"):
-        escrever_registro(nome, "saída tarde")
-elif pin_selecionado == "":
-    st.warning("Por favor, selecione um PIN.")
-else:
-    st.warning("PIN inválido. Por favor, selecione um PIN válido.")
+        # Botões para as ações de registro
+        if st.button("Entrada Manhã"):
+            escrever_registro(nome, "entrada manhã")
+        if st.button("Saída Manhã"):
+            escrever_registro(nome, "saída manhã")
+        if st.button("Entrada Tarde"):
+            escrever_registro(nome, "entrada tarde")
+        if st.button("Saída Tarde"):
+            escrever_registro(nome, "saída tarde")
+    else:
+        st.warning("PIN inválido. Por favor, digite um PIN válido.")
