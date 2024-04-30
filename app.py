@@ -22,8 +22,7 @@ def escrever_registro(nome, acao):
         last_filled_row_index = len(conn.read(worksheet="Folha", usecols=["Nome"], ttl=5)) + 1
         conn.update(
             worksheet="Folha",
-            data=[{"Nome": nome, "Ação": acao, "Timestamp": hora_atual}],
-            start=f"A{last_filled_row_index}"
+            data=[{"Nome": nome, "Ação": acao, "Timestamp": hora_atual}]
         )
         
         st.success(f"Registro de '{acao}' realizado para {nome}!")
