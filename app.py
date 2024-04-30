@@ -14,9 +14,6 @@ def load_existing_data(worksheet_name):
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
 
-# Carregar nomes disponíveis na coluna "Nome" da aba "Dados"
-nomes_disponiveis = conn.read(worksheet="Dados", usecols=["Nome"], ttl=5)["Nome"].dropna().unique()
-
 pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas"])
 
 # Determinar qual página exibir com base na seleção do usuário
@@ -42,61 +39,88 @@ if pagina_selecionada == "Marcação de Ponto":
 
             # Botões para cada tipo de registro
             if st.button("☕ Entrada Manhã"):
-                register_button_click("Entrada Manhã", nome)
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Entrada Manhã", "SubmissionDateTime": submission_datetime}
+
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
+
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
+
+                st.success("Dados registados com sucesso!")
 
             if st.button("🌮 Saída Manhã"):
-                register_button_click("Saída Manhã", nome)
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Saída Manhã", "SubmissionDateTime": submission_datetime}
+
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
+
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
+
+                st.success("Dados registados com sucesso!")
 
             if st.button("🌄 Entrada Tarde"):
-                register_button_click("Entrada Tarde", nome)
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Entrada Tarde", "SubmissionDateTime": submission_datetime}
+
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
+
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
+
+                st.success("Dados registados com sucesso!")
 
             if st.button("😴 Saída Tarde"):
-                register_button_click("Saída Tarde", nome)
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Saída Tarde", "SubmissionDateTime": submission_datetime}
+
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
+
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
+
+                st.success("Dados registados com sucesso!")
 
         else:
             st.warning("PIN incorreto. Por favor, digite um PIN válido.")
 
 else:
-    st.title("Consultas")
+    # Opções para filtrar por nome
+    nomes_unicos = existing_data_reservations["Name"].unique()
+    nome_filtro = st.sidebar.selectbox("Filtrar por nome:", [""] + list(nomes_unicos))
 
-    # Filtro por data
+    # Filtrar por data
     data_inicio = st.sidebar.date_input("Data de início:")
     data_fim = st.sidebar.date_input("Data de fim:")
-    
-    # Filtro por nome
-    nome_filtro = st.sidebar.selectbox("Filtrar por nome:", nomes_disponiveis)
 
-    # Converter as strings de data para objetos datetime.date
-    data_inicio = datetime.combine(data_inicio, datetime.min.time()) if data_inicio else None
-    data_fim = datetime.combine(data_fim, datetime.max.time()) if data_fim else None
-
-    filtered_data = existing_data_reservations.copy()
-    if data_inicio and data_fim:
-        filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
-        filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
+    # Filtrar os dados de acordo com as seleções do usuário
     if nome_filtro:
-        filtered_data = filtered_data[filtered_data["Name"].str.contains(nome_filtro)]
+        filtered_data = existing_data_reservations[existing_data_reservations["Name"] == nome_filtro]
+    else:
+        filtered_data = existing_data_reservations
 
-    # Filtrar os dados
-    filtered_data = existing_data_reservations.copy()
     if data_inicio and data_fim:
-        filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
         filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
-    if nome_filtro:
-        filtered_data = filtered_data[filtered_data["Name"].str.contains(nome_filtro)]
 
-    # Exibir os dados filtrados
     st.write(filtered_data)
-
-# Função para registrar o clique em um botão na planilha
-def register_button_click(button_name, nome):
-    # Obter a hora atual
-    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    # Criar nova linha com nome, botão e hora
-    new_row = {"Name": nome, "Button": button_name, "SubmissionDateTime": submission_datetime}
-    # Adicionar nova linha aos dados existentes
-    new_rows = existing_data_reservations.to_dict(orient="records")
-    new_rows.append(new_row)
-    # Atualizar a planilha com os novos dados
-    conn.update(worksheet="Folha", data=new_rows)
-    st.success("Dados registrados com sucesso!")
