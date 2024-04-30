@@ -13,9 +13,11 @@ def escrever_numero(nome):
     # Obter a hora atual para registro na planilha
     hora_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Encontrar a última linha preenchida na planilha
+    # Ler os dados da planilha "Folha"
     existing_data = conn.read(worksheet="Folha", usecols=["Nome"], ttl=5)
-    last_filled_row_index = len(existing_data) + 1
+    
+    # Encontrar a última linha preenchida na planilha
+    last_filled_row_index = existing_data.index[-1] + 2 if not existing_data.empty else 1
 
     # Escrever o número na planilha
     conn.update(
