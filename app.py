@@ -20,52 +20,31 @@ existing_data_reservations = load_existing_data("Folha")
 with st.form(key="vendor_form"):
     name = st.text_input(label="Name")
 
-    # Botões para cada tipo de registro
-    if st.button("Button 1"):
-        # Obter a hora atual
-        submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        # Criar nova linha com nome e hora
-        new_row = {"Name": name, "SubmissionDateTime": submission_datetime}
-
-        # Adicionar nova linha aos dados existentes
-        new_rows = existing_data_reservations.to_dict(orient="records")
-        new_rows.append(new_row)
-
-        # Atualizar a planilha com os novos dados
-        conn.update(worksheet="Folha", data=new_rows)
-
-        st.success("Details successfully submitted!")
-    if st.button("Button 2"):
-        # Obter a hora atual
-        submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        # Criar nova linha com nome e hora
-        new_row = {"Name": name, "SubmissionDateTime": submission_datetime}
-
-        # Adicionar nova linha aos dados existentes
-        new_rows = existing_data_reservations.to_dict(orient="records")
-        new_rows.append(new_row)
-
-        # Atualizar a planilha com os novos dados
-        conn.update(worksheet="Folha", data=new_rows)
-
-        st.success("Details successfully submitted!")
-
     submit_button = st.form_submit_button(label="Submit Details")
-    if submit_button:
-        # Obter a hora atual
-        submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        # Criar nova linha com nome e hora
-        new_row = {"Name": name, "SubmissionDateTime": submission_datetime}
 
-        # Adicionar nova linha aos dados existentes
-        new_rows = existing_data_reservations.to_dict(orient="records")
-        new_rows.append(new_row)
+# Botões para cada tipo de registro
+if st.button("Button 1"):
+    # Obter a hora atual
+    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Criar nova linha com nome e hora
+    new_row = {"Name": name, "SubmissionDateTime": submission_datetime}
 
-        # Atualizar a planilha com os novos dados
-        conn.update(worksheet="Folha", data=new_rows)
+    # Adicionar nova linha aos dados existentes
+    new_rows = existing_data_reservations.to_dict(orient="records")
+    new_rows.append(new_row)
 
-        st.success("Details successfully submitted!")
+    # Atualizar a planilha com os novos dados
+    conn.update(worksheet="Folha", data=new_rows)
 
+    st.success("Details successfully submitted!")
+
+if st.button("Button 2"):
+    # Obter a hora atual
+    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Criar nova linha com nome e hora
+    new_row = {"Name": name, "SubmissionDateTime": submission_datetime}
+
+    # Adicionar nova linha aos dados existentes
+    new_r
