@@ -24,6 +24,14 @@ def escrever_numero():
 # Interface do Streamlit
 st.title("Aplicativo para Escrever na Planilha")
 
-# Botão para escrever o número 1 na planilha quando clicado
-if st.button("Escrever Número 1 na Planilha"):
-    escrever_numero()
+# Adicionar campo de senha
+senha = st.text_input("Digite a senha:", type="password")
+
+# Verificar se a senha está correta
+if senha == "senha_correta":
+    st.subheader("Botões disponíveis:")
+    # Botão para escrever o número 1 na planilha quando clicado
+    if st.button("Escrever Número 1 na Planilha"):
+        escrever_numero()
+else:
+    st.warning("Senha incorreta. Por favor, tente novamente.")
