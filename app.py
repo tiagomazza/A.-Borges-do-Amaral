@@ -5,42 +5,34 @@ import pandas as pd
 
 st.title("Registro")
 
+# Função para carregar os dados existentes da planilha
+def load_existing_data(worksheet_name):
+    existing_data = conn.read(worksheet=worksheet_name, ttl=5)
+    return existing_data.dropna(how="all")
+
 # Conexão com o Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# Função para carregar os dados existentes da planilha
-def load_existing_data(worksheet_name):
-    existing_data = conn.read(worksheet=worksheet_name, usecols=list(range(11)), ttl=5)
-    return existing_data.dropna(how="all")
-
-# Carregar os dados existentes
+# Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
 
+# Formulário para inserir o nome
 with st.form(key="vendor_form"):
-    # Adicionar campo para o nome
     name = st.text_input(label="Name")
 
-    # Adicionar 4 botões adicionais
-    button1_clicked = st.form_submit_button(label="Button 1")
-    button2_clicked = st.form_submit_button(label="Button 2")
-    button3_clicked = st.form_submit_button(label="Button 3")
-    button4_clicked = st.form_submit_button(label="Button 4")
+    submit_button = st.form_submit_button(label="Submit Details")
+    if submit_button:
+        # Obter a hora atual
+        submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Criar nova linha com nome e hora
+        new_row = {"Name": name, "SubmissionDateTime": submission_datetime}
 
-    # Obter o nome do botão clicado
-    if button1_clicked:
-        button_name = "Button 1"
-    elif button2_clicked:
-        button_name = "Button 2"
-    elif button3_clicked:
-        button_name = "Button 3"
-    elif button4_clicked:
-        button_name = "Button 4"
-    else:
-        button_name = None
+        # Adicionar nova linha aos dados existentes
+        new_rows = existing_data_reservations.to_dict(orient="records")
+        new_rows.append(new_row)
 
-    # Submeter o formulário
-    if st.form_submit_button(label="Submit Details"):
-        # Verificar se algum botão foi clicado
-        if button_name:
-            # Obter o timestamp atual
-            submission_datetime = datetime.now().strft
+        # Atualizar a planilha com os novos dados
+        conn.update(worksheet="Folha", data=new_rows)
+
+        st.success("Details successfully submitted!")
