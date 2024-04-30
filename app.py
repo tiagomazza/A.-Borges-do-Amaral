@@ -38,6 +38,9 @@ if pin_digitado:
     if int(pin_digitado) in dados["Pin"].tolist():
         nome = dados.loc[dados["Pin"] == int(pin_digitado), "Nome"].iloc[0]
         
+        # Dar as boas-vindas utilizando o nome correspondente
+        st.write(f"Bem-vindo, {nome}!")
+        
         st.subheader("Botões disponíveis:")
         
         # Botão para escrever o número 1 na planilha quando clicado
