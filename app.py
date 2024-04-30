@@ -47,4 +47,10 @@ if st.button("Button 2"):
     new_row = {"Name": name, "SubmissionDateTime": submission_datetime}
 
     # Adicionar nova linha aos dados existentes
-    new_r
+    new_rows = existing_data_reservations.to_dict(orient="records")
+    new_rows.append(new_row)
+
+    # Atualizar a planilha com os novos dados
+    conn.update(worksheet="Folha", data=new_rows)
+
+    st.success("Details successfully submitted!")
