@@ -130,7 +130,7 @@ elif pagina_selecionada == "Consultas":
     
     # Calculando as horas trabalhadas
     filtered_data["Horas trabalhadas"] = pd.to_datetime(filtered_data["SubmissionDateTime"]).dt.time
-    filtered_data["Horas trabalhadas"] = filtered_data["Horas trabalhadas"].diff().dt.total_seconds().fillna(0) / 3600
+    filtered_data["Horas trabalhadas"] = pd.to_timedelta(filtered_data["Horas trabalhadas"]).diff().dt.total_seconds().fillna(0) / 3600
 
     # Agrupando as horas trabalhadas por nome
     horas_trabalhadas = filtered_data.groupby("Name")["Horas trabalhadas"].sum().reset_index()
