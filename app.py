@@ -132,11 +132,11 @@ elif pagina_selecionada == "Consultas":
     data = {
         'Data': filtered_data['SubmissionDateTime'],
         'Nome': filtered_data['Name'],
-        'Entrada Manhã': (filtered_data['Button'] == 'Entrada Manhã').astype(int),
-        'Saída Manhã': (filtered_data['Button'] == 'Saída Manhã').astype(int),
-        'Entrada Tarde': (filtered_data['Button'] == 'Entrada Tarde').astype(int),
-        'Saída Tarde': (filtered_data['Button'] == 'Saída Tarde').astype(int),
-        'Total trabalhado': 0
+        'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'], pd.NaT),
+        'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'], pd.NaT),
+        'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'], pd.NaT),
+        'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'], pd.NaT),
+        'Total trabalhado': pd.NaT
     }
 
     # Agrupar por data e nome para calcular o total trabalhado por dia
