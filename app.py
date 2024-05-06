@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
 import pandas as pd
-import numpy as np  # Adicionando a importação do NumPy
+import numpy as np
 
 # Conexão com o Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
