@@ -140,10 +140,12 @@ elif pagina_selecionada == "Consultas":
         'Total trabalhado': pd.NaT
     }
 
-
     # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
-    df['Total trabalhado'] = df[['Entrada Manhã', 'Saída Manhã', 'Entrada Tarde', 'Saída Tarde']].sum(axis=1)
+    df['Total trabalhado'] = pd.to_timedelta(df['Saída Manhã']) - pd.to_timedelta(df['Entrada Manhã']) + pd.to_timedelta(df['Saída Tarde']) - pd.to_timedelta(df['Entrada Tarde'])
+
+    # Convertendo timedelta para horas
+    df['Total trabalhado'] = df['Total trabalhado'] / np.timedelta64(1, 'h')
 
     # Agrupar linhas com mesma Data e Nome
     df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
