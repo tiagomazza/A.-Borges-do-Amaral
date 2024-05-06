@@ -128,18 +128,20 @@ elif pagina_selecionada == "Consultas":
         filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
         filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
 
-    st.write(filtered_data)
-
+    # Criar DataFrame com os dados filtrados
     data = {
-    'Nome': [1, 2, 3, 4, 5],
-    'Entrada Manhã': ['a', 'b', 'c', 'd', 'e'],
-    'Saída Manhã': [True, False, True, False, True],
-    'Entrada Tarde': [0.1, 0.2, 0.3, 0.4, 0.5],
-    'Saída Tarde': [100, 200, 300, 400, 500],
-    'Total trabalhado': ['x', 'y', 'z', 'u', 'v'],
+        'Data': filtered_data['SubmissionDateTime'],
+        'Nome': filtered_data['Name'],
+        'Entrada Manhã': (filtered_data['Button'] == 'Entrada Manhã').astype(int),
+        'Saída Manhã': (filtered_data['Button'] == 'Saída Manhã').astype(int),
+        'Entrada Tarde': (filtered_data['Button'] == 'Entrada Tarde').astype(int),
+        'Saída Tarde': (filtered_data['Button'] == 'Saída Tarde').astype(int),
+        'Total trabalhado': 0
     }
 
+    # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
+    df['Total trabalhado'] = df[['Entrada Manhã', 'Saída Manhã', 'Entrada Tarde', 'Saída Tarde']].sum(axis=1)
 
     # Exibir o DataFrame na página
     st.write(df)
