@@ -131,14 +131,12 @@ elif pagina_selecionada == "Consultas":
     st.write(filtered_data)
 
     data = {
-    'a': [1, 2, 3, 4, 5],
-    'b': ['a', 'b', 'c', 'd', 'e'],
-    'c': [True, False, True, False, True],
-    'd': [0.1, 0.2, 0.3, 0.4, 0.5],
-    'e': [100, 200, 300, 400, 500],
-    'f': ['x', 'y', 'z', 'u', 'v'],
-    'g': [10, 20, 30, 40, 50],
-    'h': [True, True, False, False, True]
+    'Nome': [1, 2, 3, 4, 5],
+    'Entrada Manhã': ['a', 'b', 'c', 'd', 'e'],
+    'Saída Manhã': [True, False, True, False, True],
+    'Entrada Tarde': [0.1, 0.2, 0.3, 0.4, 0.5],
+    'Saída Tarde': [100, 200, 300, 400, 500],
+    'Total trabalhado': ['x', 'y', 'z', 'u', 'v'],
     }
 
     df = pd.DataFrame(data)
