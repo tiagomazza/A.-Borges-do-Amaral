@@ -130,6 +130,7 @@ elif pagina_selecionada == "Consultas":
         filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
 
     # Criar DataFrame com os dados filtrados
+# Criar DataFrame com os dados filtrados
     data = {
         'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
         'Nome': filtered_data['Name'],
@@ -147,7 +148,10 @@ elif pagina_selecionada == "Consultas":
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
-    df['Total trabalhado'] = (df['Saída Manhã'] - df['Entrada Manhã']).dt.total_seconds() / 3600 + (df['Saída Tarde'] - df['Entrada Tarde']).dt.total_seconds() / 3600
+    df['Total trabalhado'] = (df['Saída Manhã'] - df['Entrada Manhã']).dt.total_seconds() / 3600
+
+    # Converter timedelta para horas
+    df['Total trabalhado'] = df['Total trabalhado'] + (df['Saída Tarde'] - df['Entrada Tarde']).dt.total_seconds() / 3600
 
     # Agrupar linhas com mesma Data e Nome
     df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
