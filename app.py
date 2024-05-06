@@ -131,7 +131,7 @@ elif pagina_selecionada == "Consultas":
 
     # Criar DataFrame com os dados filtrados
     data = {
-        'Data': filtered_data['SubmissionDateTime'],
+        'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
         'Nome': filtered_data['Name'],
         'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
         'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
