@@ -142,4 +142,7 @@ elif pagina_selecionada == "Consultas":
 
     # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
-    df['Total trabalhado'] = df
+    df['Total trabalhado'] = df[['Entrada Manhã', 'Saída Manhã', 'Entrada Tarde', 'Saída Tarde']].sum(axis=1)
+
+    # Exibir o DataFrame na página
+    st.write(df)
