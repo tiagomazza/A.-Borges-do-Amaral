@@ -11,8 +11,23 @@ def load_existing_data(worksheet_name):
     existing_data = conn.read(worksheet=worksheet_name, ttl=5)
     return existing_data.dropna(how="all")
 
+# Função para calcular as horas trabalhadas
+def calcular_horas_trabalhadas(row):
+    entrada_manha = pd.to_datetime(row["Entrada Manhã"])
+    saida_manha = pd.to_datetime(row["Saída Manhã"])
+    entrada_tarde = pd.to_datetime(row["Entrada Tarde"])
+    saida_tarde = pd.to_datetime(row["Saída Tarde"])
+
+    horas_manha = (saida_manha - entrada_manha).total_seconds() / 3600
+    horas_tarde = (saida_tarde - entrada_tarde).total_seconds() / 3600
+
+    return horas_manha + horas_tarde
+
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
+
+# Adicionar coluna de horas trabalhadas
+existing_data_reservations["Horas Trabalhadas"] = existing_data_reservations.apply(calcular_horas_trabalhadas, axis=1)
 
 pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas"])
 
@@ -129,3 +144,5 @@ elif pagina_selecionada == "Consultas":
         filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
 
     st.write(filtered_data)
+
+    st.write(filtered_data[["Name", "Entrada Manhã", "Saída Manhã", "Entrada Tarde", "Saída Tarde", "Horas Trabalhadas"]])
