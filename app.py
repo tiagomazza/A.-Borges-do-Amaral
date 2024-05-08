@@ -38,22 +38,23 @@ if pagina_selecionada == "Marcação de Ponto":
             # Adicionar espaço entre a mensagem de boas-vindas e os botões
             st.write("")
 
+            # Botões para cada tipo de registro
             buttons = {
-            "☕ Entrada Manhã": "Entrada Manhã",
-            "🌮 Saída Manhã": "Saída Manhã",
-            "🌄 Entrada Tarde": "Entrada Tarde",
-            "😴 Saída Tarde": "Saída Tarde"
+                "☕ Entrada Manhã": "Entrada Manhã",
+                "🌮 Saída Manhã": "Saída Manhã",
+                "🌄 Entrada Tarde": "Entrada Tarde",
+                "😴 Saída Tarde": "Saída Tarde"
             }
 
             for button_text, button_name in buttons.items():
                 if st.button(button_text):
                     # Verificar se já existe um registro para este botão no mesmo dia
-                    if existing_data_reservations[(existing_data_reservations['Nome'] == nome) & (existing_data_reservations[button_name] == button_name)].empty:
+                    if existing_data_reservations[(existing_data_reservations['Nome'] == nome) & (existing_data_reservations[button_name].notnull())].empty:
                         # Obter a hora atual
                         submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         
-                        # Criar nova linha com nome, botão, hora e data
-                        new_row = {"Data": datetime.now().strftime("%d/%m%aa"), "Nome": nome, "Entrada Manhã", "Saída Manhã", "Entrada Tarde","Saída Tarde"  }
+                        # Criar nova linha com nome, hora e data
+                        new_row = {"Data": datetime.now().strftime("%d/%m"), "Nome": nome, button_name: submission_datetime}
 
                         # Adicionar nova linha aos dados existentes
                         new_rows = existing_data_reservations.to_dict(orient="records")
@@ -62,9 +63,10 @@ if pagina_selecionada == "Marcação de Ponto":
                         # Atualizar a planilha com os novos dados
                         conn.update(worksheet="Folha", data=new_rows)
 
-                        st.success("Dados registados com sucesso!")
+                        st.success("Dados registrados com sucesso!")
                     else:
-                        st.warning(f"Já foi registrado um(a) {button_name} para este usuário hoje.")
+                        st.warning(f"Já foi registrado a {button_name} para este usuário hoje.")
+
 
         else:
             st.warning("PIN incorreto. Por favor, digite um PIN válido.")
