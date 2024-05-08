@@ -153,6 +153,6 @@ elif pagina_selecionada == "Consultas":
 
     # Agrupar linhas com mesma Data e Nome
     df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
-    df['Total trabalhado'] = 
+    df['Total trabalhado'] = "1"
     # Exibir o DataFrame na página
     st.write(df)
