@@ -12,6 +12,22 @@ def load_existing_data(worksheet_name):
     existing_data = conn.read(worksheet=worksheet_name, ttl=5)
     return existing_data.dropna(how="all")
 
+def fill_missing_data(data_frame):
+    default_entry_morning = pd.Timestamp.now().replace(hour=9, minute=0, second=0)
+    default_exit_morning = pd.Timestamp.now().replace(hour=12, minute=30, second=0)
+    default_entry_afternoon = pd.Timestamp.now().replace(hour=14, minute=30, second=0)
+    default_exit_afternoon = pd.Timestamp.now().replace(hour=18, minute=0, second=0)
+    
+    for index, row in data_frame.iterrows():
+        if pd.isnull(row['Entrada Manhã']):
+            data_frame.at[index, 'Entrada Manhã'] = default_entry_morning
+        if pd.isnull(row['Saída Manhã']):
+            data_frame.at[index, 'Saída Manhã'] = default_exit_morning
+        if pd.isnull(row['Entrada Tarde']):
+            data_frame.at[index, 'Entrada Tarde'] = default_entry_afternoon
+        if pd.isnull(row['Saída Tarde']):
+            data_frame.at[index, 'Saída Tarde'] = default_exit_afternoon
+
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
 
@@ -170,32 +186,14 @@ elif pagina_selecionada == "Consultas":
     # Exibir o DataFrame agrupado na página
     st.write(grouped_data)
 
+
 elif pagina_selecionada == "Admin":
-    st.title("Administração")
-
-    # Função para preencher as datas faltantes com os horários padrão
-    def fill_missing_dates_with_default_times(data_frame):
-        default_times = {
-            "Entrada Manhã": "09:00",
-            "Saída Manhã": "12:30",
-            "Entrada Tarde": "14:30",
-            "Saída Tarde": "18:00"
-        }
-
-        for button, default_time in default_times.items():
-            # Preencher as datas faltantes com o horário padrão para cada botão
-            mask = (data_frame["SubmissionDateTime"].isna()) & (data_frame["Button"] == button)
-            data_frame.loc[mask, "SubmissionDateTime"] = pd.to_datetime(data_frame.loc[mask, "Data"] + " " + default_time)
-
-        # Atualizar a planilha com os novos dados
-        conn.update(worksheet="Folha", data=data_frame.to_dict(orient="records"))
-        st.success("Datas faltantes preenchidas com os horários padrão com sucesso.")
-
-    # Botão para preencher as datas faltantes com os horários padrão
-    if st.button("Preencher datas faltantes com horários padrão"):
-        fill_missing_dates_with_default_times(existing_data_reservations)
-
+    st.title("Consulta de Registros")
     
+    # Botão para preencher os dados faltantes com os horários padrão
+    if st.button("Preencher dados faltantes com horários padrão"):
+        fill_missing_data(existing_data_reservations)
+
     # Filtrar por nome
     nomes = existing_data_reservations["Name"].unique()
     filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
@@ -233,37 +231,34 @@ elif pagina_selecionada == "Admin":
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
 
-    button_counter = 0
+    # Preencher dados faltantes com os horários padrão
+    fill_missing_data(df)
 
-    # Função para gerar uma chave única para os botões
-    def generate_button_key():
-        global button_counter
-        button_counter += 1
-        return f"button_{button_counter}"
+    # Agrupar por data e nome para calcular o total trabalhado por dia
+    grouped_data = df.groupby(['Data', 'Nome']).agg({
+        'Entrada Manhã': 'first',
+        'Saída Manhã': 'first',
+        'Entrada Tarde': 'first',
+        'Saída Tarde': 'first'
+    }).reset_index()
 
-    # Página de Administração
-elif pagina_selecionada == "Admin":
-    st.title("Administração")
+    # Calcular o total trabalhado por dia
+    for index, row in grouped_data.iterrows():
+        if not (pd.isnull(row['Entrada Manhã']) or pd.isnull(row['Saída Manhã']) or pd.isnull(row['Entrada Tarde']) or pd.isnull(row['Saída Tarde'])):
+            total_trabalhado = (row['Saída Manhã'] - row['Entrada Manhã']) + (row['Saída Tarde'] - row['Entrada Tarde'])
+            grouped_data.at[index, 'Total trabalhado'] = total_trabalhado
+        else:
+            grouped_data.at[index, 'Total trabalhado'] = np.nan
 
-    # Função para preencher as datas faltantes com os horários padrão
-    def fill_missing_dates_with_default_times(data_frame):
-        default_times = {
-            "Entrada Manhã": "09:00",
-            "Saída Manhã": "12:30",
-            "Entrada Tarde": "14:30",
-            "Saída Tarde": "18:00"
-        }
+    # Converter o total trabalhado para horas e minutos
+    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].dt.total_seconds() / 3600
+    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
 
-        for button, default_time in default_times.items():
-            # Preencher as datas faltantes com o horário padrão para cada botão
-            mask = (data_frame["SubmissionDateTime"].isna()) & (data_frame["Button"] == button)
-            data_frame.loc[mask, "SubmissionDateTime"] = pd.to_datetime(data_frame.loc[mask, "SubmissionDateTime"].dt.strftime("%Y-%m-%d") + " " + default_time)
+    # Converter as colunas de entrada e saída para o formato hh:mm
+    grouped_data['Entrada Manhã'] = grouped_data['Entrada Manhã'].dt.strftime("%H:%M")
+    grouped_data['Saída Manhã'] = grouped_data['Saída Manhã'].dt.strftime("%H:%M")
+    grouped_data['Entrada Tarde'] = grouped_data['Entrada Tarde'].dt.strftime("%H:%M")
+    grouped_data['Saída Tarde'] = grouped_data['Saída Tarde'].dt.strftime("%H:%M")
 
-        # Atualizar a planilha com os novos dados
-        conn.update(worksheet="Folha", data=data_frame.to_dict(orient="records"))
-        st.success("Datas faltantes preenchidas com os horários padrão com sucesso.")
-
-    # Botão para preencher as datas faltantes com os horários padrão
-    fill_button_key = generate_button_key()
-    if st.button("Preencher datas faltantes com horários padrão", key=fill_button_key):
-        fill_missing_dates_with_default_times(existing_data_reservations)
+    # Exibir o DataFrame agrupado na página
+    st.write(grouped_data)
