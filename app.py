@@ -149,9 +149,9 @@ elif pagina_selecionada == "Consultas":
 
     # Converter horários para datetime
     df['Entrada Manhã'] #= pd.to_datetime(df['Entrada Manhã'], format="%H:%M", errors='coerce')
-    #df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M", errors='coerce')
-    #df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M", errors='coerce')
-    #df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M", errors='coerce')
+    df['Saída Manhã'] #= pd.to_datetime(df['Saída Manhã'], format="%H:%M", errors='coerce')
+    df['Entrada Tarde'] #= #pd.to_datetime(df['Entrada Tarde'], format="%H:%M", errors='coerce')
+    df['Saída Tarde'] #= pd.to_datetime(df['Saída Tarde'], format="%H:%M", errors='coerce')
 
 
     #df['Entrada Manhã conv'] = df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
