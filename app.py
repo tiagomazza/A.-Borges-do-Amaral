@@ -1,4 +1,3 @@
-
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
@@ -142,25 +141,11 @@ elif pagina_selecionada == "Consultas":
         'Total trabalhado': pd.NaT
     }
 
-    # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
-    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
-    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
-    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
-    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
+    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M")
+    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M")
+    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
-    # Agrupar linhas com mesma Data e Nome
-    df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
-
-    def calcular_diferenca_entrada_saida(entrada, saida):
-        minutos_entrada = entrada.dt.hour * 60 + entrada.dt.minute
-        minutos_saida = saida.dt.hour * 60 + saida.dt.minute
-        diferenca_minutos = minutos_saida - minutos_entrada
-        return pd.to_datetime(diferenca_minutos, unit='m').dt.strftime('%H:%M')
-
-    # Aplicar a função para calcular a diferença entre entrada e saída de cada turno
-    df['Total trabalhado'] = calcular_diferenca_entrada_saida(df['Entrada Manhã'], df['Saída Manhã']) + calcular_diferenca_entrada_saida(df['Entrada Tarde'], df['Saída Tarde'])
-
-
-    # Exibir o DataFrame na página
-    st.write(df)
+    # Calcular a diferença entre a saída e a entrada de manhã para obter o tempo trabalhado
+    df['Total trabalhado'] = df['Saída Manhã'] - df['Entrada Manhã']
