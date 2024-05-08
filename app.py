@@ -142,15 +142,19 @@ elif pagina_selecionada == "Consultas":
     # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
     df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
-    df['Entrada Manhã em numeros'] = int(df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute)
+    df['Entrada Manhã em numeros'] = df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
     df['Entrada Manhã (Minutos)'] = df['Entrada Manhã em numeros']
-    
+    df['Entrada Manhã em numeros'] = int(df['Entrada Manhã em numeros'])
+
+
     df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
-    df['Saída Manhã em numeros'] = int(df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute)
-    df['Saída Manhã (Minutos)'] = df['Saída Manhã em numeros']
+    df['Saída Manhã em numeros'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute)
+    df['Saída Manhã em numeros'] = int(df['Saída Manhã em numeros'])
+    #df['Saída Manhã (Minutos)'] = df['Saída Manhã em numeros']
 
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
     df['Entrada Tarde em numeros'] = df['Entrada Tarde'].dt.hour * 60 + df['Entrada Tarde'].dt.minute
+    
     df['Entrada Tarde (Minutos)'] = df['Entrada Tarde em numeros']
 
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
