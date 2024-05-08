@@ -142,7 +142,20 @@ elif pagina_selecionada == "Consultas":
         'Total trabalhado': pd.NaT
     }
 
+
+
+    # Criar DataFrame
     df = pd.DataFrame(data)
+
+    # Converter horários para datetime
+    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M", errors='coerce')
+    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M", errors='coerce')
+    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M", errors='coerce')
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M", errors='coerce')
+
+    # Verificar o tipo de dados após a conversão
+    print("Tipo de dados após a conversão:")
+    print(df.dtypes)
 
     # Converter horários para minutos diretamente
     df['Entrada Manhã conv'] = df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
@@ -159,5 +172,5 @@ elif pagina_selecionada == "Consultas":
     # Remover as colunas intermediárias de minutos e de cálculo
     df.drop(columns=['Entrada Manhã conv', 'Saída Manhã conv', 'Entrada Tarde conv', 'Saída Tarde conv', 'Total trabalhado calc'], inplace=True)
 
-    # Exibir o DataFrame resultante
-    print(df)
+# Exibir o DataFrame resultante
+print(df)
