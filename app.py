@@ -154,7 +154,7 @@ elif pagina_selecionada == "Consultas":
     df['Saída Tarde'] = df['Saída Tarde'].dt.hour * 60 + df['Saída Tarde'].dt.minute
 
     # Calcular o total trabalhado em minutos
-    df['Total trabalhado'] = df['Saída Manhã'] - df['Entrada Manhã']
+    #df['Total trabalhado'] = df['Saída Manhã'] - df['Entrada Manhã']
 
     # Exibir DataFrame com os dados transformados
     print("\nDataFrame com dados transformados:")
