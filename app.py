@@ -187,7 +187,7 @@ elif pagina_selecionada == "Consultas":
     st.write(grouped_data)
 
 elif pagina_selecionada == "Admin":
-     st.title("Consulta de Registros")
+    st.title("Consulta de Registros")
     
     # Botão para preencher os dados faltantes com os horários padrão
     if st.button("Preencher dados faltantes com horários padrão"):
