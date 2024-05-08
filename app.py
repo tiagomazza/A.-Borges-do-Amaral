@@ -233,24 +233,37 @@ elif pagina_selecionada == "Admin":
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
 
-       # Função para preencher as datas faltantes com os horários padrão
-    def fill_missing_dates_with_default_times(data_frame):
-        default_times = {
-            "Entrada Manhã": "09:00",
-            "Saída Manhã": "12:30",
-            "Entrada Tarde": "14:30",
-            "Saída Tarde": "18:00"
-        }
+    button_counter = 0
 
-        for button, default_time in default_times.items():
-            # Preencher as datas faltantes com o horário padrão para cada botão
-            mask = (data_frame["SubmissionDateTime"].isna()) & (data_frame["Button"] == button)
-            data_frame.loc[mask, "SubmissionDateTime"] = pd.to_datetime(data_frame.loc[mask, "SubmissionDateTime"].dt.strftime("%Y-%m-%d") + " " + default_time)
+    # Função para gerar uma chave única para os botões
+    def generate_button_key():
+        global button_counter
+        button_counter += 1
+        return f"button_{button_counter}"
 
-        # Atualizar a planilha com os novos dados
-        conn.update(worksheet="Folha", data=data_frame.to_dict(orient="records"))
-        st.success("Datas faltantes preenchidas com os horários padrão com sucesso.")
+    # Página de Administração
+    elif pagina_selecionada == "Admin":
+        st.title("Administração")
 
-    # Botão para preencher as datas faltantes com os horários padrão
-    if st.button("Preencher datas faltantes com horários padrão"):
-        fill_missing_dates_with_default_times(existing_data_reservations)
+        # Função para preencher as datas faltantes com os horários padrão
+        def fill_missing_dates_with_default_times(data_frame):
+            default_times = {
+                "Entrada Manhã": "09:00",
+                "Saída Manhã": "12:30",
+                "Entrada Tarde": "14:30",
+                "Saída Tarde": "18:00"
+            }
+
+            for button, default_time in default_times.items():
+                # Preencher as datas faltantes com o horário padrão para cada botão
+                mask = (data_frame["SubmissionDateTime"].isna()) & (data_frame["Button"] == button)
+                data_frame.loc[mask, "SubmissionDateTime"] = pd.to_datetime(data_frame.loc[mask, "SubmissionDateTime"].dt.strftime("%Y-%m-%d") + " " + default_time)
+
+            # Atualizar a planilha com os novos dados
+            conn.update(worksheet="Folha", data=data_frame.to_dict(orient="records"))
+            st.success("Datas faltantes preenchidas com os horários padrão com sucesso.")
+
+        # Botão para preencher as datas faltantes com os horários padrão
+        fill_button_key = generate_button_key()
+        if st.button("Preencher datas faltantes com horários padrão", key=fill_button_key):
+            fill_missing_dates_with_default_times(existing_data_reservations)
