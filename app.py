@@ -134,10 +134,10 @@ elif pagina_selecionada == "Consultas":
     data = {
     'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
     'Nome': filtered_data['Name'],
-    'Entrada Manhã': filtered_data['Button'] == 'Entrada Manhã',  # Utilizando apenas a série booleana
-    'Saída Manhã': filtered_data['Button'] == 'Saída Manhã',  # Utilizando apenas a série booleana
-    'Entrada Tarde': filtered_data['Button'] == 'Entrada Tarde',  # Utilizando apenas a série booleana
-    'Saída Tarde': filtered_data['Button'] == 'Saída Tarde',  # Utilizando apenas a série booleana
+    'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'], pd.NaT),
+    'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'], pd.NaT),
+    'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'], pd.NaT),
+    'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'], pd.NaT),
     'Total trabalhado': pd.NaT
     }
 
