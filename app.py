@@ -134,10 +134,10 @@ elif pagina_selecionada == "Consultas":
     data = {
         'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
         'Nome': filtered_data['Name'],
-        'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime']),
-        'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime']),
-        'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime']),
-        'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime']),
+        'Entrada Manhã': (filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime']),
+        'Saída Manhã': (filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime']),
+        'Entrada Tarde': (filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime']),
+        'Saída Tarde': (filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime']),
         'Total trabalhado': pd.NaT
     }
 
