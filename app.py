@@ -173,4 +173,4 @@ elif pagina_selecionada == "Consultas":
     df.drop(columns=['Entrada Manhã conv', 'Saída Manhã conv', 'Entrada Tarde conv', 'Saída Tarde conv', 'Total trabalhado calc'], inplace=True)
 
 # Exibir o DataFrame resultante
-print(df)
+    print(df)
