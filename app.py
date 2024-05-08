@@ -142,10 +142,13 @@ elif pagina_selecionada == "Consultas":
     }
 
     df = pd.DataFrame(data)
-    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M")
-    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M")
-    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
-    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
-    # Converter timedelta para horas
-    df['Total trabalhado'] = df['Saída Manhã'] - ['Entrada Manhã']
+    # Converter horários de entrada e saída para minutos
+    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M").dt.hour * 60 + pd.to_datetime(df['Entrada Manhã'], format="%H:%M").dt.minute
+    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M").dt.hour * 60 + pd.to_datetime(df['Saída Manhã'], format="%H:%M").dt.minute
+    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M").dt.hour * 60 + pd.to_datetime(df['Entrada Tarde'], format="%H:%M").dt.minute
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M").dt.hour * 60 + pd.to_datetime(df['Saída Tarde'], format="%H:%M").dt.minute
+
+    # Calcular a diferença em minutos entre saída e entrada
+    df['Total trabalhado'] = df['Saída Manhã'] - df['Entrada Manhã']
+
