@@ -28,6 +28,17 @@ def fill_missing_data(data_frame):
         if pd.isnull(row['Saída Tarde']):
             data_frame.at[index, 'Saída Tarde'] = default_exit_afternoon
 
+def print_data():
+    import tempfile
+    import webbrowser
+    
+    # Salvar os dados em um arquivo CSV temporário
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as tmp_file:
+        grouped_data.to_csv(tmp_file.name, index=False)
+    
+    # Abrir o arquivo CSV em um navegador para impressão
+    webbrowser.open('file://' + tmp_file.name)
+
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
 
