@@ -157,20 +157,15 @@ elif pagina_selecionada == "Consultas":
     print("Tipo de dados após a conversão:")
     print(df.dtypes)
 
-    # Converter horários para minutos diretamente
     df['Entrada Manhã conv'] = df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
     df['Saída Manhã conv'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute
     df['Entrada Tarde conv'] = df['Entrada Tarde'].dt.hour * 60 + df['Entrada Tarde'].dt.minute
     df['Saída Tarde conv'] = df['Saída Tarde'].dt.hour * 60 + df['Saída Tarde'].dt.minute
-
-    # Calcular o total trabalhado em minutos
-    df['Total trabalhado calc'] = df['Saída Manhã conv'] - df['Entrada Manhã conv'] + df['Saída Tarde conv'] - df['Entrada Tarde conv']
-
-    # Converter o resultado final de minutos para o formato de hora novamente
+    df['Total trabalhado calc'] = df['Saída Manhã conv']- df['Entrada Manhã conv'] + df['Saída Tarde conv']- df['Entrada Tarde conv']
     df['Total trabalhado'] = pd.to_datetime(df['Total trabalhado calc'], unit='m').dt.strftime('%H:%M')
 
     # Remover as colunas intermediárias de minutos e de cálculo
-    df.drop(columns=['Entrada Manhã conv', 'Saída Manhã conv', 'Entrada Tarde conv', 'Saída Tarde conv', 'Total trabalhado calc'], inplace=True)
+    #f.drop(columns=['Entrada Manhã conv', 'Saída Manhã conv', 'Entrada Tarde conv', 'Saída Tarde conv', 'Total trabalhado calc'], inplace=True)
 
 # Exibir o DataFrame resultante
     print(df)
