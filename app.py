@@ -134,18 +134,18 @@ elif pagina_selecionada == "Consultas":
     data = {
         'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
         'Nome': filtered_data['Name'],
-        'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-        'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-        'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-        'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+        'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'])
+        'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'])
+        'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'])
+        'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'])
         'Total trabalhado': pd.NaT
     }
 
     df = pd.DataFrame(data)
-    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M")
-    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M")
-    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
-    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
+    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
+    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
+    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
 
     # Agrupar por data e nome para calcular o total trabalhado por dia
     grouped_data = df.groupby(['Data', 'Nome']).agg({
