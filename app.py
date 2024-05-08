@@ -188,8 +188,7 @@ elif pagina_selecionada == "Consultas":
 
 elif pagina_selecionada == "Admin":
     # Botão para preencher os dados faltantes com os horários padrão
-    if st.button("Preencher dados faltantes com horários padrão"):
-        fill_missing_data(existing_data_reservations)
+
 
     # Filtrar por nome
     nomes = existing_data_reservations["Name"].unique()
@@ -259,3 +258,6 @@ elif pagina_selecionada == "Admin":
 
     # Exibir o DataFrame agrupado na página
     st.write(grouped_data)
+
+    if st.button("Imprimir Dados"):
+        print_data()
