@@ -48,7 +48,7 @@ if pagina_selecionada == "Marcação de Ponto":
             for button_text, button_name in buttons.items():
                 if st.button(button_text):
                     # Verificar se já existe um registro para este botão no mesmo dia
-                    if existing_data_reservations[(existing_data_reservations['Name'] == nome) & (existing_data_reservations['Button'] == button_text)].empty:
+                    if existing_data_reservations[(existing_data_reservations['Nome'] == nome) & (existing_data_reservations['Button'] == button_text)].empty:
                         # Obter a hora atual
                         submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         
