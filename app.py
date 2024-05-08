@@ -158,10 +158,10 @@ elif pagina_selecionada == "Consultas":
     df['Saída Tarde (Minutos)'] = df['Saída Tarde em numeros']
 
     df['Total trabalhado'] = df['Saída Tarde em numeros'] - df['Entrada Tarde em numeros'] + df['Saída Manhã em numeros'] - df['Entrada Manhã em numeros']
-    df['Total trabalhado'] = pd.to_datetime(df['Total trabalhado'], unit='m').dt.strftime('%H:%M')
+    #df['Total trabalhado'] = pd.to_datetime(df['Total trabalhado'], unit='m').dt.strftime('%H:%M')
     
-    df.drop(columns=['Entrada Manhã em numeros','Entrada Manhã (Minutos)', 'Saída Manhã em numeros', 'Saída Manhã (Minutos)',
-    'Entrada Tarde', 'Entrada Tarde em numeros', 'Saída Tarde em numeros','Entrada Tarde (Minutos)'  ], inplace=True)
+    # df.drop(columns=['Entrada Manhã em numeros','Entrada Manhã (Minutos)', 'Saída Manhã em numeros', 'Saída Manhã (Minutos)',
+    #'Entrada Tarde', 'Entrada Tarde em numeros', 'Saída Tarde em numeros','Entrada Tarde (Minutos)'  ], inplace=True)
 
     # Agrupar linhas com mesma Data e Nome
     df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
