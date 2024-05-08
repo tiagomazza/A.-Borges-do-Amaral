@@ -153,10 +153,10 @@ elif pagina_selecionada == "Consultas":
     df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
 
     def calcular_diferenca_entrada_saida(entrada, saida):
-    minutos_entrada = entrada.dt.hour * 60 + entrada.dt.minute
-    minutos_saida = saida.dt.hour * 60 + saida.dt.minute
-    diferenca_minutos = minutos_saida - minutos_entrada
-    return pd.to_datetime(diferenca_minutos, unit='m').dt.strftime('%H:%M')
+        minutos_entrada = entrada.dt.hour * 60 + entrada.dt.minute
+        minutos_saida = saida.dt.hour * 60 + saida.dt.minute
+        diferenca_minutos = minutos_saida - minutos_entrada
+        return pd.to_datetime(diferenca_minutos, unit='m').dt.strftime('%H:%M')
 
     # Aplicar a função para calcular a diferença entre entrada e saída de cada turno
     df['Total trabalhado'] = calcular_diferenca_entrada_saida(df['Entrada Manhã'], df['Saída Manhã']) + calcular_diferenca_entrada_saida(df['Entrada Tarde'], df['Saída Tarde'])
