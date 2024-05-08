@@ -157,7 +157,7 @@ elif pagina_selecionada == "Consultas":
     df['Saída Tarde em numeros'] = df['Saída Tarde'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
     df['Saída Tarde (Minutos)'] = df['Saída Tarde em numeros']
 
-    df['Total trabalhado'] = df['Saída Tarde em numeros'] - df['Entrada Tarde em numeros'] + df['Saída Manhã Manhã em numeros'] - df['Entrada Manhã em numeros']
+    df['Total trabalhado'] = df['Saída Tarde em numeros'] - df['Entrada Tarde em numeros'] + df['Saída Manhã em numeros'] - df['Entrada Manhã em numeros']
     df['Total trabalhado'] = pd.to_datetime(df['Total trabalhado'], unit='m').dt.strftime('%H:%M')
     
     df.drop(columns=['Entrada Manhã em numeros','Entrada Manhã (Minutos)', 'Saída Manhã em numeros', 'Saída Manhã (Minutos)',
