@@ -141,10 +141,10 @@ elif pagina_selecionada == "Consultas":
     }
 
     df = pd.DataFrame(data)
-    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format='%H:%M', errors='coerce')
-    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format='%H:%M', errors='coerce')
-    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format='%H:%M', errors='coerce')
-    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format='%H:%M', errors='coerce')
+    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
+    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
+    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'],)
 
     # Agrupar por data e nome para calcular o total trabalhado por dia
     grouped_data = df.groupby(['Data', 'Nome']).agg({
