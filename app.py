@@ -166,3 +166,4 @@ elif pagina_selecionada == "Consultas":
 
 # Exibir o DataFrame resultante
     print(df)
+    print("mod")
