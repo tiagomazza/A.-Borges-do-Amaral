@@ -55,76 +55,53 @@ if pagina_selecionada == "Marcação de Ponto":
 
                 st.success("Dados registrados com sucesso!")
 
-
-
             if st.button("🌮 Saída Manhã"):
-                              # Verificar se já existe um registro para o mesmo usuário, botão e data
-                today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
-                if existing_data_reservations[(existing_data_reservations["Name"] == nome) & 
-                                            (existing_data_reservations["Button"] == "Saída Manhã") & 
-                                            (existing_data_reservations["SubmissionDateTime"].dt.strftime("%Y-%m-%d") == today_date)].empty:
-                    # Obter a hora atual
-                    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    
-                    # Criar nova linha com nome, botão e hora
-                    new_row = {"Name": nome, "Button": "Saída Manhã", "SubmissionDateTime": submission_datetime}
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Saída Manhã", "SubmissionDateTime": submission_datetime}
 
-                    # Adicionar nova linha aos dados existentes
-                    new_rows = existing_data_reservations.to_dict(orient="records")
-                    new_rows.append(new_row)
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
 
-                    # Atualizar a planilha com os novos dados
-                    conn.update(worksheet="Folha", data=new_rows)
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
 
-                    st.success("Dados registrados com sucesso!")
-                else:
-                    st.warning("Registro já efetuado para este usuário, botão e data.")
+                st.success("Dados registrados com sucesso!")
 
             if st.button("🌄 Entrada Tarde"):
-                                # Verificar se já existe um registro para o mesmo usuário, botão e data
-                today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
-                if existing_data_reservations[(existing_data_reservations["Name"] == nome) & 
-                                            (existing_data_reservations["Button"] == "Entrada Tarde") & 
-                                            (existing_data_reservations["SubmissionDateTime"].dt.strftime("%Y-%m-%d") == today_date)].empty:
-                    # Obter a hora atual
-                    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    
-                    # Criar nova linha com nome, botão e hora
-                    new_row = {"Name": nome, "Button": "Entrada Tarde", "SubmissionDateTime": submission_datetime}
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Entrada Tarde", "SubmissionDateTime": submission_datetime}
 
-                    # Adicionar nova linha aos dados existentes
-                    new_rows = existing_data_reservations.to_dict(orient="records")
-                    new_rows.append(new_row)
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
 
-                    # Atualizar a planilha com os novos dados
-                    conn.update(worksheet="Folha", data=new_rows)
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
 
-                    st.success("Dados registrados com sucesso!")
-                else:
-                    st.warning("Registro já efetuado para este usuário, botão e data.")
+                st.success("Dados registrados com sucesso!")
 
             if st.button("😴 Saída Tarde"):
-                                # Verificar se já existe um registro para o mesmo usuário, botão e data
-                today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
-                if existing_data_reservations[(existing_data_reservations["Name"] == nome) & 
-                                            (existing_data_reservations["Button"] == "Saída Tarde") & 
-                                            (existing_data_reservations["SubmissionDateTime"].dt.strftime("%Y-%m-%d") == today_date)].empty:
-                    # Obter a hora atual
-                    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    
-                    # Criar nova linha com nome, botão e hora
-                    new_row = {"Name": nome, "Button": "Saída Tarde", "SubmissionDateTime": submission_datetime}
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Saída Tarde", "SubmissionDateTime": submission_datetime}
 
-                    # Adicionar nova linha aos dados existentes
-                    new_rows = existing_data_reservations.to_dict(orient="records")
-                    new_rows.append(new_row)
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
 
-                    # Atualizar a planilha com os novos dados
-                    conn.update(worksheet="Folha", data=new_rows)
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
 
-                    st.success("Dados registrados com sucesso!")
-                else:
-                    st.warning("Registro já efetuado para este usuário, botão e data.")
+                st.success("Dados registrados com sucesso!")
 
         else:
             st.warning("PIN incorreto. Por favor, digite um PIN válido.")
@@ -192,3 +169,25 @@ elif pagina_selecionada == "Consultas":
 
     # Exibir o DataFrame agrupado na página
     st.write(grouped_data)
+def add_entry(button, name):
+    # Verificar se já existe um registro para o mesmo usuário, botão e data
+    today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
+    if existing_data_reservations[(existing_data_reservations["Name"] == name) & 
+                                  (existing_data_reservations["Button"] == button) & 
+                                  (existing_data_reservations["SubmissionDateTime"].dt.strftime("%Y-%m-%d") == today_date)].empty:
+        # Obter a hora atual
+        submission_datetime = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Criar nova linha com nome, botão e hora
+        new_row = {"Name": name, "Button": button, "SubmissionDateTime": submission_datetime}
+
+        # Adicionar nova linha aos dados existentes
+        new_rows = existing_data_reservations.to_dict(orient="records")
+        new_rows.append(new_row)
+
+        # Atualizar a planilha com os novos dados
+        conn.update(worksheet="Folha", data=new_rows)
+
+        st.success("Dados registrados com sucesso!")
+    else:
+        st.warning("Registro já efetuado para este usuário, botão e data.")
