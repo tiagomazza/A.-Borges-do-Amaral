@@ -130,45 +130,26 @@ elif pagina_selecionada == "Consultas":
         filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
 
     # Criar DataFrame com os dados filtrados
+# Criar DataFrame com os dados filtrados
     data = {
-    'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
-    'Nome': filtered_data['Name'],
-    'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-    'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-    'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-    'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-    'Total trabalhado': pd.NaT
-}
+        'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
+        'Nome': filtered_data['Name'],
+        'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+        'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+        'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+        'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+        'Total trabalhado': pd.NaT
+    }
 
     # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
-    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M", errors='coerce')
-    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M", errors='coerce')
-    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M", errors='coerce')
-    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M", errors='coerce')
+    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M")
+    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M")
+    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
-    df['Total trabalhado'] = (df['Saída Manhã'] - df['Entrada Manhã']).dt.total_seconds() / 3600 + (df['Saída Tarde'] - df['Entrada Tarde']).dt.total_seconds() / 3600
+    # Converter timedelta para horas
+    df['Total trabalhado'] = df['Data']
 
-    # Agrupar linhas com mesma Data e Nome
-    df = df.groupby(['Data', 'Nome', df['SubmissionDateTime'].dt.strftime('%p')], as_index=False).agg(
-    {'SubmissionDateTime': 'first', 'Entrada Manhã': 'first', 'Saída Manhã': 'last', 'Entrada Tarde': 'first', 'Saída Tarde': 'last'}
-    )
-
-    # Calcular o total trabalhado para cada período
-    df['Total Manhã'] = (df['Saída Manhã'] - df['Entrada Manhã']).dt.total_seconds() / 3600
-    df['Total Tarde'] = (df['Saída Tarde'] - df['Entrada Tarde']).dt.total_seconds() / 3600
-
-    # Calcular o total trabalhado por dia somando os totais de manhã e tarde
-    df['Total trabalhado'] = df['Total Manhã'] + df['Total Tarde']
-
-    # Excluir colunas desnecessárias
-    df.drop(columns=['SubmissionDateTime', 'Total Manhã', 'Total Tarde'], inplace=True)
-
-    # Renomear colunas
-    df.rename(columns={'Entrada Manhã': 'Entrada', 'Saída Manhã': 'Saída', 'Entrada Tarde': 'Entrada', 'Saída Tarde': 'Saída'}, inplace=True)
-
-    # Reordenar as colunas
-    df = df[['Data', 'Nome', 'Entrada', 'Saída', 'Total trabalhado']]
-
-    # Exibir o DataFrame
+    # Exibir o DataFrame na página
     st.write(df)
