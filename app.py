@@ -1,3 +1,4 @@
+
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
@@ -129,58 +130,37 @@ elif pagina_selecionada == "Consultas":
         filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
         filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
 
+    # Criar DataFrame com os dados filtrados
+# Criar DataFrame com os dados filtrados
     data = {
         'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
         'Nome': filtered_data['Name'],
-        'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', pd.to_datetime(filtered_data['SubmissionDateTime']).dt.strftime("%H:%M"), pd.NaT),
-        'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', pd.to_datetime(filtered_data['SubmissionDateTime']).dt.strftime("%H:%M"), pd.NaT),
-        'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', pd.to_datetime(filtered_data['SubmissionDateTime']).dt.strftime("%H:%M"), pd.NaT),
-        'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', pd.to_datetime(filtered_data['SubmissionDateTime']).dt.strftime("%H:%M"), pd.NaT),
+        'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+        'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+        'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+        'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
         'Total trabalhado': pd.NaT
     }
 
     # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
-    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
-    df['Entrada Manhã em numeros'] = df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
-    df['Entrada Manhã (Minutos)'] = df['Entrada Manhã em numeros']
-
-    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
-    df['Saída Manhã em numeros'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute
-    #df['Saída Manhã (Minutos)'] = df['Saída Manhã em numeros']
-
-    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
-    df['Entrada Tarde em numeros'] = df['Entrada Tarde'].dt.hour * 60 + df['Entrada Tarde'].dt.minute
-    
-    df['Entrada Tarde (Minutos)'] = df['Entrada Tarde em numeros']
-
-    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
-    df['Saída Tarde em numeros'] = df['Saída Tarde'].dt.hour * 60 + df['Saída Tarde'].dt.minute
-    df['Saída Tarde (Minutos)'] = df['Saída Tarde em numeros']
-
-    df['Total trabalhado soma'] = df['Saída Manhã'] - df['Entrada Manhã'] #+ df['Saída Manhã em numeros'] - df['Entrada Manhã em numeros']
-    #df['Total trabalhado'] = pd.to_datetime(df['Total trabalhado'], unit='m').dt.strftime('%H:%M')
-    
-    # df.drop(columns=['Entrada Manhã em numeros','Entrada Manhã (Minutos)', 'Saída Manhã em numeros', 'Saída Manhã (Minutos)',
-    #'Entrada Tarde', 'Entrada Tarde em numeros', 'Saída Tarde em numeros','Entrada Tarde (Minutos)'  ], inplace=True)
+    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M")
+    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M")
+    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
     # Agrupar linhas com mesma Data e Nome
     df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
+
+    def calcular_diferenca_entrada_saida(entrada, saida):
+        minutos_entrada = entrada.dt.hour * 60 + entrada.dt.minute
+        minutos_saida = saida.dt.hour * 60 + saida.dt.minute
+        diferenca_minutos = minutos_saida - minutos_entrada
+        return pd.to_datetime(diferenca_minutos, unit='m').dt.strftime('%H:%M')
+
+    # Aplicar a função para calcular a diferença entre entrada e saída de cada turno
+    df['Total trabalhado'] = calcular_diferenca_entrada_saida(df['Entrada Manhã'], df['Saída Manhã']) + calcular_diferenca_entrada_saida(df['Entrada Tarde'], df['Saída Tarde'])
+
+
     # Exibir o DataFrame na página
     st.write(df)
-
-    # Convertendo os horários de entrada e saída para um formato de tempo
-    filtered_data['Entrada Manhã'] = pd.to_datetime(filtered_data['Entrada Manhã'])
-    filtered_data['Saída Manhã'] = pd.to_datetime(filtered_data['Saída Manhã'])
-    filtered_data['Entrada Tarde'] = pd.to_datetime(filtered_data['Entrada Tarde'])
-    filtered_data['Saída Tarde'] = pd.to_datetime(filtered_data['Saída Tarde'])
-
-    # Calculando os minutos totais desde a meia-noite para cada horário e armazenando como inteiros
-    filtered_data['Entrada Manhã (Minutos)'] = filtered_data['Entrada Manhã'].dt.hour * 60 + filtered_data['Entrada Manhã'].dt.minute
-    filtered_data['Saída Manhã (Minutos)'] = filtered_data['Saída Manhã'].dt.hour * 60 + filtered_data['Saída Manhã'].dt.minute
-    filtered_data['Entrada Tarde (Minutos)'] = filtered_data['Entrada Tarde'].dt.hour * 60 + filtered_data['Entrada Tarde'].dt.minute
-    filtered_data['Saída Tarde (Minutos)'] = filtered_data['Saída Tarde'].dt.hour * 60 + filtered_data['Saída Tarde'].dt.minute
-
-    # Exibir o DataFrame atualizado
-    st.write(filtered_data)
-
