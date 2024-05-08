@@ -28,16 +28,25 @@ def fill_missing_data(data_frame):
         if pd.isnull(row['Saída Tarde']):
             data_frame.at[index, 'Saída Tarde'] = default_exit_afternoon
 
-def print_data():
-    import tempfile
-    import webbrowser
-    
-    # Salvar os dados em um arquivo CSV temporário
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as tmp_file:
-        grouped_data.to_csv(tmp_file.name, index=False)
-    
-    # Abrir o arquivo CSV em um navegador para impressão
-    webbrowser.open('file://' + tmp_file.name)
+def save_to_excel(df, text_first_cell):
+    # Criar um arquivo XLSX com o nome especificado pelo usuário
+    file_name = st.text_input("Digite o nome do arquivo (sem a extensão):", "dados_registrados")
+    if st.button("Salvar em XLSX"):
+        if file_name:
+            file_path = f"{file_name}.xlsx"
+            with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
+                # Escrever o texto da primeira célula
+                if text_first_cell:
+                    workbook = writer.book
+                    worksheet = workbook.add_worksheet()
+                    worksheet.write(0, 0, text_first_cell)
+
+                # Salvar o DataFrame no arquivo XLSX
+                df.to_excel(writer, index=False)
+            st.success(f"Dados salvos em '{file_name}.xlsx' com sucesso.")
+        else:
+            st.warning("Por favor, digite um nome para o arquivo.")
+
 
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
@@ -270,5 +279,5 @@ elif pagina_selecionada == "Admin":
     # Exibir o DataFrame agrupado na página
     st.write(grouped_data)
 
-    if st.button("Imprimir Dados"):
-        print_data()
+    text_first_cell = st.text_input("Digite o texto da primeira célula:", "Relatório de Registros")
+    save_to_excel(existing_data_reservations, text_first_cell)
