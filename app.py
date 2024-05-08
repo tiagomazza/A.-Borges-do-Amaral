@@ -193,16 +193,16 @@ elif pagina_selecionada == "Admin":
     if st.button("Preencher dados faltantes com horários padrão"):
         fill_missing_data(existing_data_reservations)
 
-    # Filtrar por nome
-    nomes = existing_data_reservations["Name"].unique()
-    filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
+        # Filtrar por nome
+        nomes = existing_data_reservations["Name"].unique()
+        filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
 
-    # Filtrar por data
-    data_inicio = st.date_input("Data de Início")
-    data_fim = st.date_input("Data de Fim")
+        # Filtrar por data
+        data_inicio = st.date_input("Data de Início")
+        data_fim = st.date_input("Data de Fim")
 
-    # Filtrar os dados
-    filtered_data = existing_data_reservations.copy()
+        # Filtrar os dados
+        filtered_data = existing_data_reservations.copy()   
 
     if filtro_nome != "Todos":
         filtered_data = filtered_data[filtered_data["Name"] == filtro_nome]
