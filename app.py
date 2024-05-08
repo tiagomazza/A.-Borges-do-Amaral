@@ -89,7 +89,7 @@ if pagina_selecionada == "Marcação de Ponto":
 
             if st.button("😴 Saída Tarde"):
                 # Obter a hora atual
-                submission_datetime = datetime.now().strftime("%H:%M")
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 
                 # Criar nova linha com nome, botão e hora
                 new_row = {"Name": nome, "Button": "Saída Tarde", "SubmissionDateTime": submission_datetime}
@@ -144,7 +144,7 @@ elif pagina_selecionada == "Consultas":
     df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
     df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
-    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'],)
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
 
     # Agrupar por data e nome para calcular o total trabalhado por dia
     grouped_data = df.groupby(['Data', 'Nome']).agg({
@@ -160,6 +160,12 @@ elif pagina_selecionada == "Consultas":
     # Converter o total trabalhado para horas e minutos
     grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].dt.total_seconds() / 3600
     grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
+
+    # Converter as colunas de entrada e saída para o formato hh:mm
+    grouped_data['Entrada Manhã'] = grouped_data['Entrada Manhã'].dt.strftime("%H:%M")
+    grouped_data['Saída Manhã'] = grouped_data['Saída Manhã'].dt.strftime("%H:%M")
+    grouped_data['Entrada Tarde'] = grouped_data['Entrada Tarde'].dt.strftime("%H:%M")
+    grouped_data['Saída Tarde'] = grouped_data['Saída Tarde'].dt.strftime("%H:%M")
 
     # Exibir o DataFrame agrupado na página
     st.write(grouped_data)
