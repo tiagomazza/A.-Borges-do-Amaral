@@ -57,6 +57,10 @@ if pagina_selecionada == "Marcação de Ponto":
 elif pagina_selecionada == "Consultas":
     st.title("Consulta de Registros")
     
+    # Botão para adicionar a data atual aos dados faltantes
+    if st.button("Adicionar data atual aos dados faltantes"):
+        add_current_date_to_missing_data(existing_data_reservations)
+
     # Filtrar por nome
     nomes = existing_data_reservations["Name"].unique()
     filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
@@ -107,10 +111,13 @@ elif pagina_selecionada == "Consultas":
     for index, row in grouped_data.iterrows():
         if not pd.isnull(row['Entrada Manhã']) and not pd.isnull(row['Saída Manhã']) and not pd.isnull(row['Entrada Tarde']) and not pd.isnull(row['Saída Tarde']):
             total_trabalhado = (row['Saída Manhã'] - row['Entrada Manhã']) + (row['Saída Tarde'] - row['Entrada Tarde'])
-            grouped_data.at[index, 'Total trabalhado'] = total_trabalhado.total_seconds() / 3600
-            grouped_data.at[index, 'Total trabalhado'] = '{:02.0f}:{:02.0f}'.format(*divmod(grouped_data.at[index, 'Total trabalhado'] * 60, 60))
+            grouped_data.at[index, 'Total trabalhado'] = total_trabalhado
         else:
-            grouped_data.at[index, 'Total trabalhado'] = "Dados faltantes"
+            grouped_data.at[index, 'Total trabalhado'] = np.nan
+
+    # Converter o total trabalhado para horas e minutos
+    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].dt.total_seconds() / 3600
+    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
 
     # Converter as colunas de entrada e saída para o formato hh:mm
     grouped_data['Entrada Manhã'] = grouped_data['Entrada Manhã'].dt.strftime("%H:%M")
@@ -143,3 +150,13 @@ def add_entry(button, name):
         st.success("Dados registrados com sucesso!")
     else:
         st.warning("Registro já efetuado para este usuário, botão e data.")
+
+def add_current_date_to_missing_data(data_frame):
+    current_date = pd.Timestamp.now().strftime("%Y-%m-%d")
+    for index, row in data_frame.iterrows():
+        if pd.isnull(row['SubmissionDateTime']):
+            data_frame.at[index, 'SubmissionDateTime'] = current_date
+
+    # Atualizar a planilha com os novos dados
+    conn.update(worksheet="Folha", data=data_frame.to_dict(orient="records"))
+    st.success("Datas faltantes adicionadas com sucesso.")
