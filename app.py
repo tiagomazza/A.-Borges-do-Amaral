@@ -53,7 +53,7 @@ if pagina_selecionada == "Marcação de Ponto":
                 # Atualizar a planilha com os novos dados
                 conn.update(worksheet="Folha", data=new_rows)
 
-                st.success("Dados registados com sucesso!")
+                st.success("Dados registrados com sucesso!")
 
             if st.button("🌮 Saída Manhã"):
                 # Obter a hora atual
@@ -69,7 +69,7 @@ if pagina_selecionada == "Marcação de Ponto":
                 # Atualizar a planilha com os novos dados
                 conn.update(worksheet="Folha", data=new_rows)
 
-                st.success("Dados registados com sucesso!")
+                st.success("Dados registrados com sucesso!")
 
             if st.button("🌄 Entrada Tarde"):
                 # Obter a hora atual
@@ -85,7 +85,7 @@ if pagina_selecionada == "Marcação de Ponto":
                 # Atualizar a planilha com os novos dados
                 conn.update(worksheet="Folha", data=new_rows)
 
-                st.success("Dados registados com sucesso!")
+                st.success("Dados registrados com sucesso!")
 
             if st.button("😴 Saída Tarde"):
                 # Obter a hora atual
@@ -101,7 +101,7 @@ if pagina_selecionada == "Marcação de Ponto":
                 # Atualizar a planilha com os novos dados
                 conn.update(worksheet="Folha", data=new_rows)
 
-                st.success("Dados registados com sucesso!")
+                st.success("Dados registrados com sucesso!")
 
         else:
             st.warning("PIN incorreto. Por favor, digite um PIN válido.")
@@ -130,15 +130,14 @@ elif pagina_selecionada == "Consultas":
         filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
 
     # Criar DataFrame com os dados filtrados
-# Criar DataFrame com os dados filtrados
     data = {
-    'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
-    'Nome': filtered_data['Name'],
-    'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'], pd.NaT),
-    'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'], pd.NaT),
-    'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'], pd.NaT),
-    'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'], pd.NaT),
-    'Total trabalhado': pd.NaT
+        'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
+        'Nome': filtered_data['Name'],
+        'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'], pd.NaT),
+        'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'], pd.NaT),
+        'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'], pd.NaT),
+        'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'], pd.NaT),
+        'Total trabalhado': pd.NaT
     }
 
     df = pd.DataFrame(data)
@@ -147,28 +146,20 @@ elif pagina_selecionada == "Consultas":
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
 
-    df['Total trabalhado'] = df['Total trabalhado'].dt.total_seconds() / 3600
-
-
-
     # Agrupar por data e nome para calcular o total trabalhado por dia
     grouped_data = df.groupby(['Data', 'Nome']).agg({
-    'Entrada Manhã': 'first',
-    'Saída Manhã': 'first',
-    'Entrada Tarde': 'first',
-    'Saída Tarde': 'first'
+        'Entrada Manhã': 'first',
+        'Saída Manhã': 'first',
+        'Entrada Tarde': 'first',
+        'Saída Tarde': 'first'
     }).reset_index()
 
     # Calcular o total trabalhado por dia
     grouped_data['Total trabalhado'] = (grouped_data['Saída Manhã'] - grouped_data['Entrada Manhã']) + (grouped_data['Saída Tarde'] - grouped_data['Entrada Tarde'])
 
-    df['Entrada Manhã'] = df['Entrada Manhã'].dt.strftime("%H:%M")
-    df['Saída Manhã'] = df['Saída Manhã'].dt.strftime("%H:%M")
-    df['Entrada Tarde'] = df['Entrada Tarde'].dt.strftime("%H:%M")
-    df['Saída Tarde'] = df['Saída Tarde'].dt.strftime("%H:%M")
-    df['Total trabalhado'] = df['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
+    # Converter o total trabalhado para horas e minutos
+    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].dt.total_seconds() / 3600
+    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
 
-    # Exibir o DataFrame
-    #st.write(df)
     # Exibir o DataFrame agrupado na página
     st.write(grouped_data)
