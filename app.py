@@ -144,10 +144,10 @@ elif pagina_selecionada == "Consultas":
 
     # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
-    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M")
-    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M")
-    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
-    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
+    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
+    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
+    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
 
     # Agrupar linhas com mesma Data e Nome
     df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
