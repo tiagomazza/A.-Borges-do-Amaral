@@ -131,26 +131,32 @@ elif pagina_selecionada == "Consultas":
 
     # Criar DataFrame com os dados filtrados
     data = {
-        'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
-        'Nome': filtered_data['Name'],
-        'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-        'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-        'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-        'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-        'Total trabalhado': pd.NaT
-    }
+    'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
+    'Nome': filtered_data['Name'],
+    'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+    'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+    'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+    'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+    'Total trabalhado': pd.NaT
+}
 
     # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
-    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M")
-    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M")
-    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
-    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
+    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M", errors='coerce')
+    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M", errors='coerce')
+    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M", errors='coerce')
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M", errors='coerce')
 
     df['Total trabalhado'] = (df['Saída Manhã'] - df['Entrada Manhã']).dt.total_seconds() / 3600 + (df['Saída Tarde'] - df['Entrada Tarde']).dt.total_seconds() / 3600
 
     # Agrupar linhas com mesma Data e Nome
     df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
+
+    # Formatando a saída para exibir apenas a hora e minuto
+    df['Entrada Manhã'] = df['Entrada Manhã'].dt.strftime("%H:%M")
+    df['Saída Manhã'] = df['Saída Manhã'].dt.strftime("%H:%M")
+    df['Entrada Tarde'] = df['Entrada Tarde'].dt.strftime("%H:%M")
+    df['Saída Tarde'] = df['Saída Tarde'].dt.strftime("%H:%M")
 
     # Exibir o DataFrame na página
     st.write(df)
