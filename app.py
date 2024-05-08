@@ -42,25 +42,19 @@ if pagina_selecionada == "Marcação de Ponto":
             if st.button("☕ Entrada Manhã"):
                 # Verificar se já existe um registro para o mesmo usuário, botão e data
                 today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
-                if existing_data_reservations[(existing_data_reservations["Name"] == nome) & 
-                                            (existing_data_reservations["Button"] == "Entrada Manhã") & 
-                                            (existing_data_reservations["SubmissionDateTime"].dt.strftime("%Y-%m-%d") == today_date)].empty:
-                    # Obter a hora atual
-                    today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
-                    
-                    # Criar nova linha com nome, botão e hora
-                    new_row = {"Name": nome, "Button": "Entrada Manhã", "SubmissionDateTime": submission_datetime}
+                                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Entrada Manhã", "SubmissionDateTime": submission_datetime}
 
-                    # Adicionar nova linha aos dados existentes
-                    new_rows = existing_data_reservations.to_dict(orient="records")
-                    new_rows.append(new_row)
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
 
-                    # Atualizar a planilha com os novos dados
-                    conn.update(worksheet="Folha", data=new_rows)
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
 
-                    st.success("Dados registrados com sucesso!")
-                else:
-                    st.warning("Registro já efetuado para este usuário, botão e data.")
+                st.success("Dados registrados com sucesso!")
+
 
 
             if st.button("🌮 Saída Manhã"):
