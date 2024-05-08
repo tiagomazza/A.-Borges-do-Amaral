@@ -1,4 +1,4 @@
-No seguinte codigo faça com que na coluna Total trabalhado apareça a data da respectiva linha
+
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
