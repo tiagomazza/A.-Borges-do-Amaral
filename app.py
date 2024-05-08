@@ -132,13 +132,13 @@ elif pagina_selecionada == "Consultas":
     # Criar DataFrame com os dados filtrados
 # Criar DataFrame com os dados filtrados
     data = {
-        'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
-        'Nome': filtered_data['Name'],
-        'Entrada Manhã': (filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime']),
-        'Saída Manhã': (filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime']),
-        'Entrada Tarde': (filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime']),
-        'Saída Tarde': (filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime']),
-        'Total trabalhado': pd.NaT
+    'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
+    'Nome': filtered_data['Name'],
+    'Entrada Manhã': filtered_data['Button'] == 'Entrada Manhã',  # Utilizando apenas a série booleana
+    'Saída Manhã': filtered_data['Button'] == 'Saída Manhã',  # Utilizando apenas a série booleana
+    'Entrada Tarde': filtered_data['Button'] == 'Entrada Tarde',  # Utilizando apenas a série booleana
+    'Saída Tarde': filtered_data['Button'] == 'Saída Tarde',  # Utilizando apenas a série booleana
+    'Total trabalhado': pd.NaT
     }
 
     df = pd.DataFrame(data)
