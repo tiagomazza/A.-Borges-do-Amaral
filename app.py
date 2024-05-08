@@ -168,3 +168,19 @@ elif pagina_selecionada == "Consultas":
     df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
     # Exibir o DataFrame na página
     st.write(df)
+
+    # Convertendo os horários de entrada e saída para um formato de tempo
+    filtered_data['Entrada Manhã'] = pd.to_datetime(filtered_data['Entrada Manhã'])
+    filtered_data['Saída Manhã'] = pd.to_datetime(filtered_data['Saída Manhã'])
+    filtered_data['Entrada Tarde'] = pd.to_datetime(filtered_data['Entrada Tarde'])
+    filtered_data['Saída Tarde'] = pd.to_datetime(filtered_data['Saída Tarde'])
+
+    # Calculando os minutos totais desde a meia-noite para cada horário e armazenando como inteiros
+    filtered_data['Entrada Manhã (Minutos)'] = filtered_data['Entrada Manhã'].dt.hour * 60 + filtered_data['Entrada Manhã'].dt.minute
+    filtered_data['Saída Manhã (Minutos)'] = filtered_data['Saída Manhã'].dt.hour * 60 + filtered_data['Saída Manhã'].dt.minute
+    filtered_data['Entrada Tarde (Minutos)'] = filtered_data['Entrada Tarde'].dt.hour * 60 + filtered_data['Entrada Tarde'].dt.minute
+    filtered_data['Saída Tarde (Minutos)'] = filtered_data['Saída Tarde'].dt.hour * 60 + filtered_data['Saída Tarde'].dt.minute
+
+    # Exibir o DataFrame atualizado
+    st.write(filtered_data)
+
