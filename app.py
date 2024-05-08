@@ -159,7 +159,7 @@ elif pagina_selecionada == "Consultas":
     df['Total trabalhado calc'] = df['Saída Manhã conv']- df['Entrada Manhã conv'] + df['Saída Tarde conv']- df['Entrada Tarde conv']
     df['Total trabalhado'] = pd.to_datetime(df['Total trabalhado calc'], unit='m').dt.strftime('%H:%M')
 
-    df.drop(columns=['Entrada Manhã conv', 'Saída Manhã conv', 'Entrada Tarde conv', 'Saída Tarde conv', 'Total trabalhado calc' ], inplace=True)
+    #df.drop(columns=['Entrada Manhã conv', 'Saída Manhã conv', 'Entrada Tarde conv', 'Saída Tarde conv', 'Total trabalhado calc' ], inplace=True)
 
     # Exibir o DataFrame na página
     st.write(df)
