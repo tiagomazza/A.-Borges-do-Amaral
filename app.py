@@ -147,5 +147,5 @@ elif pagina_selecionada == "Consultas":
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
-    # Calcular a diferença entre a saída e a entrada de manhã para obter o tempo trabalhado
-    df['Total trabalhado'] = df['Saída Manhã'] - df['Entrada Manhã']
+    # Converter timedelta para horas
+    df['Total trabalhado'] = df['Saída Manhã'] - ['Entrada Manhã']
