@@ -1,4 +1,3 @@
-
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
@@ -142,28 +141,17 @@ elif pagina_selecionada == "Consultas":
         'Total trabalhado': pd.NaT
     }
 
-
-
-    # Criar DataFrame
+    # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
+    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M")
+    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M")
+    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
-    # Converter horários para datetime
-    df['Entrada Manhã'] #= pd.to_datetime(df['Entrada Manhã'], format="%H:%M")
-    df['Saída Manhã'] #= pd.to_datetime(df['Saída Manhã'], format="%H:%M", errors='coerce')
-    df['Entrada Tarde'] #= #pd.to_datetime(df['Entrada Tarde'], format="%H:%M", errors='coerce')
-    df['Saída Tarde'] #= pd.to_datetime(df['Saída Tarde'], format="%H:%M", errors='coerce')
+    
 
-
-    #df['Entrada Manhã conv'] = df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
-    #df['Saída Manhã conv'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute
-    #df['Entrada Tarde conv'] = df['Entrada Tarde'].dt.hour * 60 + df['Entrada Tarde'].dt.minute
-    #df['Saída Tarde conv'] = df['Saída Tarde'].dt.hour * 60 + df['Saída Tarde'].dt.minute
-    #df['Total trabalhado calc'] = df['Saída Manhã conv']- df['Entrada Manhã conv'] + df['Saída Tarde conv']- df['Entrada Tarde conv']
-    #df['Total trabalhado'] = pd.to_datetime(df['Total trabalhado calc'], unit='m').dt.strftime('%H:%M')
-
-    # Remover as colunas intermediárias de minutos e de cálculo
-    #f.drop(columns=['Entrada Manhã conv', 'Saída Manhã conv', 'Entrada Tarde conv', 'Saída Tarde conv', 'Total trabalhado calc'], inplace=True)
-
-# Exibir o DataFrame resultante
-    print(df)
-
+    # Agrupar linhas com mesma Data e Nome
+    df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
+    df['Total trabalhado'] = 
+    # Exibir o DataFrame na página
+    st.write(df)
