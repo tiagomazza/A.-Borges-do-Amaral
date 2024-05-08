@@ -147,6 +147,10 @@ elif pagina_selecionada == "Consultas":
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
 
+    df['Total trabalhado'] = df['Total trabalhado'].dt.total_seconds() / 3600
+
+
+
     # Agrupar por data e nome para calcular o total trabalhado por dia
     grouped_data = df.groupby(['Data', 'Nome']).agg({
     'Entrada Manhã': 'first',
@@ -158,5 +162,13 @@ elif pagina_selecionada == "Consultas":
     # Calcular o total trabalhado por dia
     grouped_data['Total trabalhado'] = (grouped_data['Saída Manhã'] - grouped_data['Entrada Manhã']) + (grouped_data['Saída Tarde'] - grouped_data['Entrada Tarde'])
 
+    df['Entrada Manhã'] = df['Entrada Manhã'].dt.strftime("%H:%M")
+    df['Saída Manhã'] = df['Saída Manhã'].dt.strftime("%H:%M")
+    df['Entrada Tarde'] = df['Entrada Tarde'].dt.strftime("%H:%M")
+    df['Saída Tarde'] = df['Saída Tarde'].dt.strftime("%H:%M")
+    df['Total trabalhado'] = df['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
+
+    # Exibir o DataFrame
+    #st.write(df)
     # Exibir o DataFrame agrupado na página
     st.write(grouped_data)
