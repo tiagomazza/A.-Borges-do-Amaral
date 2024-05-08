@@ -149,7 +149,7 @@ elif pagina_selecionada == "Consultas":
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
     # Converter timedelta para horas
-    df['Total trabalhado'] = df['Entrada Manhã']
+    df['Total trabalhado'] = df['Saída Manhã'] - ['Entrada Manhã']
 
     # Exibir o DataFrame na página
     st.write(df)
