@@ -141,11 +141,11 @@ elif pagina_selecionada == "Consultas":
     }
 
 # Agrupar por data e nome para calcular o total trabalhado por dia
-df = pd.DataFrame(data)
+    df = pd.DataFrame(data)
 
-# Agrupar linhas com mesma Data e Nome
-df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
-# Exibir o DataFrame na página
+    # Agrupar linhas com mesma Data e Nome
+    df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
+    # Exibir o DataFrame na página
 
     # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
