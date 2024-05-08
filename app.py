@@ -141,15 +141,11 @@ elif pagina_selecionada == "Consultas":
         'Total trabalhado': pd.NaT
     }
 
-    # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
     df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M")
     df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M")
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
-    # Converter timedelta para horas
+    # Calcular a diferença entre a saída e a entrada de manhã para obter o tempo trabalhado
     df['Total trabalhado'] = df['Saída Manhã'] - df['Entrada Manhã']
-
-    # Exibir o DataFrame na página
-    st.write(df)
