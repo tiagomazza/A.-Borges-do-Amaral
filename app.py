@@ -53,7 +53,7 @@ if pagina_selecionada == "Marcação de Ponto":
                         submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         
                         # Criar nova linha com nome, botão, hora e data
-                        new_row = {"Data": datetime.now().strftime("%d/%m"), "Nome": nome, "Button": button_name, "SubmissionDateTime": submission_datetime}
+                        new_row = {"Data": datetime.now().strftime("%d/%m%aa"), "Nome": nome, "Entrada Manhã", "Saída Manhã", "Entrada Tarde","Saída Tarde"  }
 
                         # Adicionar nova linha aos dados existentes
                         new_rows = existing_data_reservations.to_dict(orient="records")
