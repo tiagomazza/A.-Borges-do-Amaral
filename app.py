@@ -153,9 +153,6 @@ elif pagina_selecionada == "Consultas":
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M", errors='coerce')
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M", errors='coerce')
 
-    # Verificar o tipo de dados após a conversão
-    print("Tipo de dados após a conversão:")
-    print(df.dtypes)
 
     df['Entrada Manhã conv'] = df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
     df['Saída Manhã conv'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute
