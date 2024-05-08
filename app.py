@@ -146,7 +146,7 @@ elif pagina_selecionada == "Consultas":
     #df['Entrada Manhã (Minutos)'] = df['Entrada Manhã em numeros']
     
     df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
-    df['Saída Manhã em numeros'] = df['Saída Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
+    df['Saída Manhã em numeros'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute
     #df['Saída Manhã (Minutos)'] = df['Saída Manhã em numeros']
 
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
