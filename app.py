@@ -41,7 +41,7 @@ if pagina_selecionada == "Marcação de Ponto":
             # Botões para cada tipo de registro
             if st.button("☕ Entrada Manhã"):
                 # Verificar se já existe um registro para o mesmo usuário, botão e data
-                today_date = datetime.now().strftime("%Y-%m-%d")
+                today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
                 if existing_data_reservations[(existing_data_reservations["Name"] == nome) & 
                                             (existing_data_reservations["Button"] == "Entrada Manhã") & 
                                             (existing_data_reservations["SubmissionDateTime"].dt.strftime("%Y-%m-%d") == today_date)].empty:
@@ -65,7 +65,7 @@ if pagina_selecionada == "Marcação de Ponto":
 
             if st.button("🌮 Saída Manhã"):
                               # Verificar se já existe um registro para o mesmo usuário, botão e data
-                today_date = datetime.now().strftime("%Y-%m-%d")
+                today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
                 if existing_data_reservations[(existing_data_reservations["Name"] == nome) & 
                                             (existing_data_reservations["Button"] == "Saída Manhã") & 
                                             (existing_data_reservations["SubmissionDateTime"].dt.strftime("%Y-%m-%d") == today_date)].empty:
@@ -88,7 +88,7 @@ if pagina_selecionada == "Marcação de Ponto":
 
             if st.button("🌄 Entrada Tarde"):
                                 # Verificar se já existe um registro para o mesmo usuário, botão e data
-                today_date = datetime.now().strftime("%Y-%m-%d")
+                today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
                 if existing_data_reservations[(existing_data_reservations["Name"] == nome) & 
                                             (existing_data_reservations["Button"] == "Entrada Tarde") & 
                                             (existing_data_reservations["SubmissionDateTime"].dt.strftime("%Y-%m-%d") == today_date)].empty:
@@ -111,7 +111,7 @@ if pagina_selecionada == "Marcação de Ponto":
 
             if st.button("😴 Saída Tarde"):
                                 # Verificar se já existe um registro para o mesmo usuário, botão e data
-                today_date = datetime.now().strftime("%Y-%m-%d")
+                today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
                 if existing_data_reservations[(existing_data_reservations["Name"] == nome) & 
                                             (existing_data_reservations["Button"] == "Saída Tarde") & 
                                             (existing_data_reservations["SubmissionDateTime"].dt.strftime("%Y-%m-%d") == today_date)].empty:
