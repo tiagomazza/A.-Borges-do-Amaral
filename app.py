@@ -152,15 +152,14 @@ elif pagina_selecionada == "Consultas":
     # Agrupar linhas com mesma Data e Nome
     df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
 
-    def calcular_diferenca_entrada_saida(entrada, saida):
-        minutos_entrada = entrada.dt.hour * 60 + entrada.dt.minute
-        minutos_saida = saida.dt.hour * 60 + saida.dt.minute
-        diferenca_minutos = minutos_saida - minutos_entrada
-        return pd.to_datetime(diferenca_minutos, unit='m').dt.strftime('%H:%M')
+    df['Entrada Manhã conv'] = df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
+    df['Saída Manhã conv'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute
+    df['Entrada Tarde conv'] = df['Entrada Tarde'].dt.hour * 60 + df['Entrada Tarde'].dt.minute
+    df['Saída Tarde conv'] = df['Saída Tarde'].dt.hour * 60 + df['Saída Tarde'].dt.minute
+    df['Total trabalhado calc'] = df['Saída Manhã conv']- df['Entrada Manhã conv'] + df['Saída Tarde conv']- df['Entrada Tarde conv']
+    df['Total trabalhado'] = pd.to_datetime(df['Total trabalhado calc'], unit='m').dt.strftime('%H:%M')
 
-    # Aplicar a função para calcular a diferença entre entrada e saída de cada turno
-    df['Total trabalhado'] = calcular_diferenca_entrada_saida(df['Entrada Manhã'], df['Saída Manhã']) + calcular_diferenca_entrada_saida(df['Entrada Tarde'], df['Saída Tarde'])
-
+    df.drop(columns=['Entrada Manhã conv', 'Saída Manhã conv', 'Entrada Tarde conv', 'Saída Tarde conv', 'Total trabalhado calc' ], inplace=True)
 
     # Exibir o DataFrame na página
     st.write(df)
