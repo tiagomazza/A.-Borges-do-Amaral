@@ -150,13 +150,25 @@ elif pagina_selecionada == "Consultas":
     df['Total trabalhado'] = (df['Saída Manhã'] - df['Entrada Manhã']).dt.total_seconds() / 3600 + (df['Saída Tarde'] - df['Entrada Tarde']).dt.total_seconds() / 3600
 
     # Agrupar linhas com mesma Data e Nome
-    df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
+    df = df.groupby(['Data', 'Nome', df['SubmissionDateTime'].dt.strftime('%p')], as_index=False).agg(
+    {'SubmissionDateTime': 'first', 'Entrada Manhã': 'first', 'Saída Manhã': 'last', 'Entrada Tarde': 'first', 'Saída Tarde': 'last'}
+    )
 
-    # Formatando a saída para exibir apenas a hora e minuto
-    df['Entrada Manhã'] = df['Entrada Manhã'].dt.strftime("%H:%M")
-    df['Saída Manhã'] = df['Saída Manhã'].dt.strftime("%H:%M")
-    df['Entrada Tarde'] = df['Entrada Tarde'].dt.strftime("%H:%M")
-    df['Saída Tarde'] = df['Saída Tarde'].dt.strftime("%H:%M")
+    # Calcular o total trabalhado para cada período
+    df['Total Manhã'] = (df['Saída Manhã'] - df['Entrada Manhã']).dt.total_seconds() / 3600
+    df['Total Tarde'] = (df['Saída Tarde'] - df['Entrada Tarde']).dt.total_seconds() / 3600
 
-    # Exibir o DataFrame na página
+    # Calcular o total trabalhado por dia somando os totais de manhã e tarde
+    df['Total trabalhado'] = df['Total Manhã'] + df['Total Tarde']
+
+    # Excluir colunas desnecessárias
+    df.drop(columns=['SubmissionDateTime', 'Total Manhã', 'Total Tarde'], inplace=True)
+
+    # Renomear colunas
+    df.rename(columns={'Entrada Manhã': 'Entrada', 'Saída Manhã': 'Saída', 'Entrada Tarde': 'Entrada', 'Saída Tarde': 'Saída'}, inplace=True)
+
+    # Reordenar as colunas
+    df = df[['Data', 'Nome', 'Entrada', 'Saída', 'Total trabalhado']]
+
+    # Exibir o DataFrame
     st.write(df)
