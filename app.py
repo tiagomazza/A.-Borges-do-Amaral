@@ -159,9 +159,9 @@ elif pagina_selecionada == "Consultas":
     # Criar coluna 'Entrada Manhã reconv' com valores reconvertidos para formato hh:mm
     df['Entrada Manhã reconv'] = pd.to_datetime(df['Entrada Manhã conv'], unit='m').dt.strftime('%H:%M')
     df['Saída Manhã conv'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute
-    df['Total trabalhado'] = df['Saída Manhã conv']- df['Entrada Manhã conv']
-    df['Total trabalhado reconv'] = pd.to_datetime(df['Total trabalhado'], unit='m').dt.strftime('%H:%M')
+    df['Total trabalhado calc'] = df['Saída Manhã conv']- df['Entrada Manhã conv']
+    df['Total trabalhado reconv'] = pd.to_datetime(df['Total trabalhado calc'], unit='m').dt.strftime('%H:%M')
 
-
+    df['Total trabalhado'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute -df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
     # Exibir o DataFrame na página
     st.write(df)
