@@ -132,14 +132,20 @@ elif pagina_selecionada == "Consultas":
     # Criar DataFrame com os dados filtrados
 # Criar DataFrame com os dados filtrados
     data = {
-        'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
-        'Nome': filtered_data['Name'],
-        'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-        'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-        'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-        'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-        'Total trabalhado': pd.NaT
+    'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
+    'Nome': filtered_data['Name'],
+    'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].strftime("%H:%M"), pd.NaT),
+    'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].strftime("%H:%M"), pd.NaT),
+    'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].strftime("%H:%M"), pd.NaT),
+    'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].strftime("%H:%M"), pd.NaT),
     }
+
+# Agrupar por data e nome para calcular o total trabalhado por dia
+df = pd.DataFrame(data)
+
+# Agrupar linhas com mesma Data e Nome
+df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
+# Exibir o DataFrame na página
 
     # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
