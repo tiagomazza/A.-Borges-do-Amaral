@@ -46,7 +46,7 @@ if pagina_selecionada == "Marcação de Ponto":
                                             (existing_data_reservations["Button"] == "Entrada Manhã") & 
                                             (existing_data_reservations["SubmissionDateTime"].dt.strftime("%Y-%m-%d") == today_date)].empty:
                     # Obter a hora atual
-                    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
                     
                     # Criar nova linha com nome, botão e hora
                     new_row = {"Name": nome, "Button": "Entrada Manhã", "SubmissionDateTime": submission_datetime}
