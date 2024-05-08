@@ -40,9 +40,9 @@ if pagina_selecionada == "Marcação de Ponto":
 
             # Botões para cada tipo de registro
             if st.button("☕ Entrada Manhã"):
-                # Verificar se já existe um registro para o mesmo usuário, botão e data
-                today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
-                                
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
                 # Criar nova linha com nome, botão e hora
                 new_row = {"Name": nome, "Button": "Entrada Manhã", "SubmissionDateTime": submission_datetime}
 
