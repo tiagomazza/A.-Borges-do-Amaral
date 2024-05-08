@@ -1,3 +1,4 @@
+No seguinte codigo faça com que na coluna Total trabalhado apareça a data da respectiva linha
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
@@ -141,22 +142,17 @@ elif pagina_selecionada == "Consultas":
         'Total trabalhado': pd.NaT
     }
 
+    # Agrupar por data e nome para calcular o total trabalhado por dia
     df = pd.DataFrame(data)
+    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M")
+    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M")
+    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
+    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
-    # Exibir os dados de entrada e saída
-    print("Dados de entrada e saída:")
-    print(df[['Entrada Manhã', 'Saída Manhã', 'Entrada Tarde', 'Saída Tarde']])
+    
 
-    # Converter horários para minutos
-    df['Entrada Manhã'] = df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
-    df['Saída Manhã'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute
-    df['Entrada Tarde'] = df['Entrada Tarde'].dt.hour * 60 + df['Entrada Tarde'].dt.minute
-    df['Saída Tarde'] = df['Saída Tarde'].dt.hour * 60 + df['Saída Tarde'].dt.minute
-
-    # Calcular o total trabalhado em minutos
-    #df['Total trabalhado'] = df['Saída Manhã'] - df['Entrada Manhã']
-
-    # Exibir DataFrame com os dados transformados
-    print("\nDataFrame com dados transformados:")
-    print(df)
-
+    # Agrupar linhas com mesma Data e Nome
+    df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
+    df['Total trabalhado'] = 
+    # Exibir o DataFrame na página
+    st.write(df)
