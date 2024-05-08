@@ -143,12 +143,20 @@ elif pagina_selecionada == "Consultas":
 
     df = pd.DataFrame(data)
 
-    # Converter horários de entrada e saída para minutos
-    df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'], format="%H:%M").dt.hour * 60 + pd.to_datetime(df['Entrada Manhã'], format="%H:%M").dt.minute
-    df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'], format="%H:%M").dt.hour * 60 + pd.to_datetime(df['Saída Manhã'], format="%H:%M").dt.minute
-    df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M").dt.hour * 60 + pd.to_datetime(df['Entrada Tarde'], format="%H:%M").dt.minute
-    df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M").dt.hour * 60 + pd.to_datetime(df['Saída Tarde'], format="%H:%M").dt.minute
+    # Exibir os dados de entrada e saída
+    print("Dados de entrada e saída:")
+    print(df[['Entrada Manhã', 'Saída Manhã', 'Entrada Tarde', 'Saída Tarde']])
 
-    # Calcular a diferença em minutos entre saída e entrada
+    # Converter horários para minutos
+    df['Entrada Manhã'] = df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
+    df['Saída Manhã'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute
+    df['Entrada Tarde'] = df['Entrada Tarde'].dt.hour * 60 + df['Entrada Tarde'].dt.minute
+    df['Saída Tarde'] = df['Saída Tarde'].dt.hour * 60 + df['Saída Tarde'].dt.minute
+
+    # Calcular o total trabalhado em minutos
     df['Total trabalhado'] = df['Saída Manhã'] - df['Entrada Manhã']
+
+    # Exibir DataFrame com os dados transformados
+    print("\nDataFrame com dados transformados:")
+    print(df)
 
