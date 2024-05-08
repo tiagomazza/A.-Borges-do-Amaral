@@ -148,13 +148,8 @@ elif pagina_selecionada == "Consultas":
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
-    # Adicionar a data da linha à coluna 'Total trabalhado'
-    df['Data'] = pd.to_datetime(df['Data'], format="%d/%m")
-    df['Total trabalhado'] = (df['Saída Manhã'] - df['Entrada Manhã']).dt.total_seconds() / 3600
-    df['Total trabalhado'] += (df['Saída Tarde'] - df['Entrada Tarde']).dt.total_seconds() / 3600
-
     # Converter timedelta para horas
-    df['Total trabalhado'] = df['Total trabalhado'].astype(float)
+    df['Total trabalhado'] = df['Data'].astype(float)
 
     # Exibir o DataFrame na página
     st.write(df)
