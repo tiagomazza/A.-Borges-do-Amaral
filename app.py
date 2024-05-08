@@ -233,26 +233,24 @@ elif pagina_selecionada == "Admin":
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
 
-    # Agrupar por data e nome para calcular o total trabalhado por dia
-    grouped_data = df.groupby(['Data', 'Nome']).agg({
-        'Entrada Manhã': 'first',
-        'Saída Manhã': 'first',
-        'Entrada Tarde': 'first',
-        'Saída Tarde': 'first'
-    }).reset_index()
+       # Função para preencher as datas faltantes com os horários padrão
+    def fill_missing_dates_with_default_times(data_frame):
+        default_times = {
+            "Entrada Manhã": "09:00",
+            "Saída Manhã": "12:30",
+            "Entrada Tarde": "14:30",
+            "Saída Tarde": "18:00"
+        }
 
-    # Calcular o total trabalhado por dia
-    grouped_data['Total trabalhado'] = (grouped_data['Saída Manhã'] - grouped_data['Entrada Manhã']) + (grouped_data['Saída Tarde'] - grouped_data['Entrada Tarde'])
+        for button, default_time in default_times.items():
+            # Preencher as datas faltantes com o horário padrão para cada botão
+            mask = (data_frame["SubmissionDateTime"].isna()) & (data_frame["Button"] == button)
+            data_frame.loc[mask, "SubmissionDateTime"] = pd.to_datetime(data_frame.loc[mask, "SubmissionDateTime"].dt.strftime("%Y-%m-%d") + " " + default_time)
 
-    # Converter o total trabalhado para horas e minutos
-    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].dt.total_seconds() / 3600
-    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
+        # Atualizar a planilha com os novos dados
+        conn.update(worksheet="Folha", data=data_frame.to_dict(orient="records"))
+        st.success("Datas faltantes preenchidas com os horários padrão com sucesso.")
 
-    # Converter as colunas de entrada e saída para o formato hh:mm
-    grouped_data['Entrada Manhã'] = grouped_data['Entrada Manhã'].dt.strftime("%H:%M")
-    grouped_data['Saída Manhã'] = grouped_data['Saída Manhã'].dt.strftime("%H:%M")
-    grouped_data['Entrada Tarde'] = grouped_data['Entrada Tarde'].dt.strftime("%H:%M")
-    grouped_data['Saída Tarde'] = grouped_data['Saída Tarde'].dt.strftime("%H:%M")
-
-    # Exibir o DataFrame agrupado na página
-    st.write(grouped_data)
+    # Botão para preencher as datas faltantes com os horários padrão
+    if st.button("Preencher datas faltantes com horários padrão"):
+        fill_missing_dates_with_default_times(existing_data_reservations)
