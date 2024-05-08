@@ -12,41 +12,6 @@ def load_existing_data(worksheet_name):
     existing_data = conn.read(worksheet=worksheet_name, ttl=5)
     return existing_data.dropna(how="all")
 
-# Função para adicionar entrada/saída
-def add_entry(button, name):
-    # Verificar se já existe um registro para o mesmo usuário, botão e data
-    today_date = pd.Timestamp.now().strftime("%Y-%m-%d")
-    if existing_data_reservations[(existing_data_reservations["Name"] == name) & 
-                                  (existing_data_reservations["Button"] == button) & 
-                                  (existing_data_reservations["SubmissionDateTime"].dt.strftime("%Y-%m-%d") == today_date)].empty:
-        # Obter a hora atual
-        submission_datetime = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        # Criar nova linha com nome, botão e hora
-        new_row = {"Name": name, "Button": button, "SubmissionDateTime": submission_datetime}
-
-        # Adicionar nova linha aos dados existentes
-        new_rows = existing_data_reservations.to_dict(orient="records")
-        new_rows.append(new_row)
-
-        # Atualizar a planilha com os novos dados
-        conn.update(worksheet="Folha", data=new_rows)
-
-        st.success("Dados registrados com sucesso!")
-    else:
-        st.warning("Registro já efetuado para este usuário, botão e data.")
-
-# Função para adicionar a data atual aos dados faltantes
-def add_current_date_to_missing_data(data_frame):
-    current_date = pd.Timestamp.now().strftime("%Y-%m-%d")
-    for index, row in data_frame.iterrows():
-        if pd.isnull(row['SubmissionDateTime']):
-            data_frame.at[index, 'SubmissionDateTime'] = current_date
-
-    # Atualizar a planilha com os novos dados
-    conn.update(worksheet="Folha", data=data_frame.to_dict(orient="records"))
-    st.success("Datas faltantes adicionadas com sucesso.")
-
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
 
@@ -75,16 +40,68 @@ if pagina_selecionada == "Marcação de Ponto":
 
             # Botões para cada tipo de registro
             if st.button("☕ Entrada Manhã"):
-                add_entry("Entrada Manhã", nome)
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Entrada Manhã", "SubmissionDateTime": submission_datetime}
+
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
+
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
+
+                st.success("Dados registrados com sucesso!")
 
             if st.button("🌮 Saída Manhã"):
-                add_entry("Saída Manhã", nome)
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Saída Manhã", "SubmissionDateTime": submission_datetime}
+
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
+
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
+
+                st.success("Dados registrados com sucesso!")
 
             if st.button("🌄 Entrada Tarde"):
-                add_entry("Entrada Tarde", nome)
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Entrada Tarde", "SubmissionDateTime": submission_datetime}
+
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
+
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
+
+                st.success("Dados registrados com sucesso!")
 
             if st.button("😴 Saída Tarde"):
-                add_entry("Saída Tarde", nome)
+                # Obter a hora atual
+                submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                # Criar nova linha com nome, botão e hora
+                new_row = {"Name": nome, "Button": "Saída Tarde", "SubmissionDateTime": submission_datetime}
+
+                # Adicionar nova linha aos dados existentes
+                new_rows = existing_data_reservations.to_dict(orient="records")
+                new_rows.append(new_row)
+
+                # Atualizar a planilha com os novos dados
+                conn.update(worksheet="Folha", data=new_rows)
+
+                st.success("Dados registrados com sucesso!")
 
         else:
             st.warning("PIN incorreto. Por favor, digite um PIN válido.")
@@ -92,10 +109,6 @@ if pagina_selecionada == "Marcação de Ponto":
 elif pagina_selecionada == "Consultas":
     st.title("Consulta de Registros")
     
-    # Botão para adicionar a data atual aos dados faltantes
-    if st.button("Adicionar data atual aos dados faltantes"):
-        add_current_date_to_missing_data(existing_data_reservations)
-
     # Filtrar por nome
     nomes = existing_data_reservations["Name"].unique()
     filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
@@ -142,12 +155,7 @@ elif pagina_selecionada == "Consultas":
     }).reset_index()
 
     # Calcular o total trabalhado por dia
-    for index, row in grouped_data.iterrows():
-        if not (pd.isnull(row['Entrada Manhã']) or pd.isnull(row['Saída Manhã']) or pd.isnull(row['Entrada Tarde']) or pd.isnull(row['Saída Tarde'])):
-            total_trabalhado = (row['Saída Manhã'] - row['Entrada Manhã']) + (row['Saída Tarde'] - row['Entrada Tarde'])
-            grouped_data.at[index, 'Total trabalhado'] = total_trabalhado
-        else:
-            grouped_data.at[index, 'Total trabalhado'] = np.nan
+    grouped_data['Total trabalhado'] = (grouped_data['Saída Manhã'] - grouped_data['Entrada Manhã']) + (grouped_data['Saída Tarde'] - grouped_data['Entrada Tarde'])
 
     # Converter o total trabalhado para horas e minutos
     grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].dt.total_seconds() / 3600
