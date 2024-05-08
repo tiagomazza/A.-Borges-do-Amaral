@@ -38,7 +38,7 @@ if pagina_selecionada == "Marcação de Ponto":
             # Adicionar espaço entre a mensagem de boas-vindas e os botões
             st.write("")
 
-                        buttons = {
+                buttons = {
                 "☕ Entrada Manhã": "Entrada Manhã",
                 "🌮 Saída Manhã": "Saída Manhã",
                 "🌄 Entrada Tarde": "Entrada Tarde",
