@@ -147,11 +147,11 @@ elif pagina_selecionada == "Consultas":
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'], format="%H:%M")
     df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'], format="%H:%M")
 
-    # Calcular a diferença entre a saída da manhã e a entrada da manhã
     df['Total trabalhado'] = (df['Saída Manhã'] - df['Entrada Manhã']).dt.total_seconds() / 3600
-
-    # Calcular a diferença entre a saída da tarde e a entrada da tarde e adicionar ao total trabalhado
     df['Total trabalhado'] += (df['Saída Tarde'] - df['Entrada Tarde']).dt.total_seconds() / 3600
+
+    # Preencher a coluna 'Total trabalhado' com o número 1
+    df['Total trabalhado'] = 1
 
     # Agrupar linhas com mesma Data e Nome
     df = df.groupby(['Data', 'Nome'], as_index=False).agg(lambda x: next(iter(x.dropna()), np.nan))
