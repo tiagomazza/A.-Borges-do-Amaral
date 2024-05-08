@@ -143,11 +143,11 @@ elif pagina_selecionada == "Consultas":
     df = pd.DataFrame(data)
     df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
     df['Entrada Manhã em numeros'] = df['Entrada Manhã'].dt.hour * 60 + df['Entrada Manhã'].dt.minute
-    #df['Entrada Manhã (Minutos)'] = df['Entrada Manhã em numeros']
+    df['Entrada Manhã (Minutos)'] = df['Entrada Manhã em numeros']
     
     df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
     df['Saída Manhã em numeros'] = df['Saída Manhã'].dt.hour * 60 + df['Saída Manhã'].dt.minute
-    #df['Saída Manhã (Minutos)'] = df['Saída Manhã em numeros']
+    df['Saída Manhã (Minutos)'] = df['Saída Manhã em numeros']
 
     df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
     df['Entrada Tarde em numeros'] = df['Entrada Tarde'].dt.hour * 60 + df['Entrada Tarde'].dt.minute
@@ -157,7 +157,7 @@ elif pagina_selecionada == "Consultas":
     df['Saída Tarde em numeros'] = df['Saída Tarde'].dt.hour * 60 + df['Saída Tarde'].dt.minute
     df['Saída Tarde (Minutos)'] = df['Saída Tarde em numeros']
 
-    df['Total trabalhado'] = df['Saída Manhã em numeros'] - df['Entrada Manhã em numeros'] #+ df['Saída Manhã em numeros'] - df['Entrada Manhã em numeros']
+    df['Total trabalhado'] = df['Saída Manhã em numeros (Minutos)'] - df['Entrada Manhã em numeros (Minutos)'] #+ df['Saída Manhã em numeros'] - df['Entrada Manhã em numeros']
     #df['Total trabalhado'] = pd.to_datetime(df['Total trabalhado'], unit='m').dt.strftime('%H:%M')
     
     # df.drop(columns=['Entrada Manhã em numeros','Entrada Manhã (Minutos)', 'Saída Manhã em numeros', 'Saída Manhã (Minutos)',
