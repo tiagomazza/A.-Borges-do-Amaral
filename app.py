@@ -155,7 +155,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
 
                     st.success("Dados registrados com sucesso!")
             else:
-                pass
+                st.sidebar.warning("Pin incorreto.")
         except ValueError:
             pass
 
@@ -312,5 +312,7 @@ if st.sidebar.text_input("",type="password") == str(senha_admin):
         sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
         if st.button("Salvar dados"):
             save_to_new_sheet(grouped_data)
+elif:
+    st.sidebar.text_input("",type="password") =="": pass
 else:
     st.sidebar.warning("Pin incorreto.")
