@@ -160,8 +160,8 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
             pass
 
 # Página inicial para entrada da senha
-if    st.sidebar.text_input("",type="password") =="": pass
-elif st.sidebar.text_input("",type="password") == str(senha_admin):
+if    st.sidebar.text_input("",type="password",key="input1") =="": pass
+elif st.sidebar.text_input("",type="password",key="input2") == str(senha_admin):
     # Conteúdo das abas "Consultas" e "Admin" aqui
     if pagina_selecionada == "🔍Consultas":
         st.title("🔍Consulta")
