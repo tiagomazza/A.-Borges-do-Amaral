@@ -313,4 +313,5 @@ if st.sidebar.text_input("",type="password") == str(senha_admin):
         if st.button("Salvar dados"):
             save_to_new_sheet(grouped_data)
 else:
-    st.warning("Pin incorreto.")
+    pass
+    #st.warning("Pin incorreto.")
