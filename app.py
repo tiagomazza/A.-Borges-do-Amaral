@@ -131,6 +131,10 @@ if st.sidebar.text_input("Area restrita:", type="password") == senha_admin:
         # Exibir o DataFrame agrupado na página
         st.write(grouped_data)
 
+        sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
+        if st.button("Salvar dados"):
+            save_to_new_sheet(grouped_data)
+
     elif pagina_selecionada == "Definições":
       
         st.title("Definições")
