@@ -156,6 +156,8 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                     st.success("Dados registrados com sucesso!")
             else:
                 st.error("PIN inválido!")
+        except ValueError:
+        st.error("PIN inválido!")
 
 
 # Página inicial para entrada da senha
