@@ -80,7 +80,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
         dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
                
         # Verificar se o PIN está na lista de PINs válidos
-        if int(float(pin_digitado)) in dados["Pin"].tolist():
+        try int(float(pin_digitado)) in dados["Pin"].tolist():
             nome = dados.loc[dados["Pin"] == int(float(pin_digitado)), "Nome"].iloc[0]
             
             # Dar as boas-vindas utilizando o nome correspondente
