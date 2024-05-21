@@ -55,7 +55,11 @@ st.sidebar.image("https://aborgesdoamaral.pt/wp-content/uploads/2021/04/marca-de
 pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas", "Definições"])
 
 
-senha_admin = st.secrets["Admin"]["password"]
+admin_row = dados.loc[dados["Nome"] == "Admin"]
+    if not admin_row.empty:
+        senha_admin = str(admin_row["Pin"].iloc[0])
+    else:
+        senha_admin = None
 
 
 
