@@ -54,6 +54,8 @@ def save_to_new_sheet(df, sheet_name="exportado"):
 
 pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas", "Admin"])
 senha_admin = "senha"
+# Carregar dados existentes
+existing_data_reservations = load_existing_data("Folha")
 
 # Página inicial para entrada da senha
 if st.sidebar.text_input("Digite a senha de administração:", type="password") == senha_admin:
@@ -206,12 +208,6 @@ if st.sidebar.text_input("Digite a senha de administração:", type="password") 
             save_to_new_sheet(grouped_data)
 else:
     st.warning("Senha incorreta. Você não tem permissão para acessar esta página.")
-
-
-# Carregar dados existentes
-existing_data_reservations = load_existing_data("Folha")
-
-
 
 # Determinar qual página exibir com base na seleção do usuário
 if pagina_selecionada == "Marcação de Ponto":
