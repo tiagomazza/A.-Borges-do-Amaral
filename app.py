@@ -56,10 +56,10 @@ pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consul
 
 
 admin_row = dados.loc[dados["Nome"] == "Admin"]
-    if not admin_row.empty:
-        senha_admin = str(admin_row["Pin"].iloc[0])
-    else:
-        senha_admin = None
+if not admin_row.empty:
+    senha_admin = str(admin_row["Pin"].iloc[0])
+else:
+    senha_admin = None
 
 
 
