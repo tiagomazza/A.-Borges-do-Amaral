@@ -52,13 +52,13 @@ def save_to_new_sheet(df, sheet_name="exportado"):
     except Exception as e:
         st.error(f"Erro ao salvar dados na aba '{sheet_name}': {e}")
 
-pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas", "Admin"])
+pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas", "Definições"])
 senha_admin = "senha"
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
 
 # Página inicial para entrada da senha
-if st.sidebar.text_input("Digite a senha de administração:", type="password") == senha_admin:
+if st.sidebar.text_input("Area restrita:", type="password") == senha_admin:
     # Conteúdo das abas "Consultas" e "Admin" aqui
     if pagina_selecionada == "Consultas":
         st.title("Consulta de Registros")
@@ -131,7 +131,7 @@ if st.sidebar.text_input("Digite a senha de administração:", type="password") 
         # Exibir o DataFrame agrupado na página
         st.write(grouped_data)
 
-    elif pagina_selecionada == "Admin":
+    elif pagina_selecionada == "Definições":
       
         st.title("Administração")
 
@@ -204,7 +204,7 @@ if st.sidebar.text_input("Digite a senha de administração:", type="password") 
         st.write(grouped_data)
 
         sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_Aba")
-        if st.button("Salvar dados em nova aba'"):
+        if st.button("Salvar dados"):
             save_to_new_sheet(grouped_data)
 else:
     st.warning("Senha incorreta. Você não tem permissão para acessar esta página.")
