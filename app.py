@@ -133,7 +133,7 @@ if st.sidebar.text_input("Area restrita:", type="password") == senha_admin:
 
     elif pagina_selecionada == "Definições":
       
-        st.title("Administração")
+        st.title("Definições")
 
         # Filtrar por nome
         nomes = existing_data_reservations["Name"].unique()
@@ -203,7 +203,7 @@ if st.sidebar.text_input("Area restrita:", type="password") == senha_admin:
         # Exibir o DataFrame agrupado na página
         st.write(grouped_data)
 
-        sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_Aba")
+        sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
         if st.button("Salvar dados"):
             save_to_new_sheet(grouped_data)
 else:
