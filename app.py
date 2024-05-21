@@ -158,7 +158,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                 st.error("PIN inválido!")
 
            
-         except ValueError:
+        except ValueError:
             st.error("Entrada inválida para PIN!")
 
 
