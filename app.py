@@ -52,7 +52,7 @@ def save_to_new_sheet(df, sheet_name="exportado"):
     except Exception as e:
         st.error(f"Erro ao salvar dados na aba '{sheet_name}': {e}")
 st.sidebar.image("https://aborgesdoamaral.pt/wp-content/uploads/2021/04/marca-de-75-anos.png", use_column_width=True)  # 
-pagina_selecionada = st.sidebar.radio("Menu", ["✍🏽Marcação de Ponto", "🔍Consultas", "🔐Restrito"])
+pagina_selecionada = st.sidebar.radio("", ["✍🏽Marcação de Ponto", "🔍Consultas", "🔐Restrito"])
 
 
 dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
@@ -159,7 +159,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
 
 
 # Página inicial para entrada da senha
-if st.sidebar.text_input(type="password") == str(senha_admin):
+if st.sidebar.text_input("",type="password") == str(senha_admin):
     # Conteúdo das abas "Consultas" e "Admin" aqui
     if pagina_selecionada == "🔍Consultas":
         st.title("🔍Consulta")
