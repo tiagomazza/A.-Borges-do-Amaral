@@ -58,9 +58,8 @@ pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consul
 dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
 
 admin_row = dados.loc[dados["Nome"] == "Admin"]
-admin_row = int(admin_row)
 if not admin_row.empty:
-    senha_admin = str(admin_row["Pin"].iloc[0])
+    senha_admin = int(admin_row["Pin"].iloc[0])
 else:
     senha_admin = None
 
