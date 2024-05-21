@@ -52,7 +52,7 @@ def save_to_new_sheet(df, sheet_name="exportado"):
     except Exception as e:
         st.error(f"Erro ao salvar dados na aba '{sheet_name}': {e}")
 
-
+pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas", "Admin"])
 senha_admin = "senha"
 
 # Página inicial para entrada da senha
@@ -211,7 +211,7 @@ else:
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
 
-pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas", "Admin"])
+
 
 # Determinar qual página exibir com base na seleção do usuário
 if pagina_selecionada == "Marcação de Ponto":
