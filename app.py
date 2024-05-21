@@ -35,7 +35,9 @@ def save_to_new_sheet(df, sheet_name):
             try:
                 conn.create(worksheet=sheet_name)  # Removidos os argumentos rows e cols
                 df_dict = df.to_dict(orient="records")
+                print("DataFrame convertido para dicionário:", df_dict)  # Adicionado para depuração
                 conn.update(worksheet=sheet_name, data=df_dict)
+                print("Dados atualizados na nova aba.")  # Adicionado para depuração
                 st.success(f"Dados salvos na nova aba '{sheet_name}' com sucesso.")
             except Exception as e:
                 st.error(f"Erro ao criar a nova aba: {e}")
