@@ -54,13 +54,8 @@ def save_to_new_sheet(df, sheet_name="exportado"):
 st.sidebar.image("https://aborgesdoamaral.pt/wp-content/uploads/2021/04/marca-de-75-anos.png", use_column_width=True)  # 
 pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas", "Definições"])
 
-dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
 
-admin_row = dados.loc[dados["Nome"] == "admin"]
-if not admin_row.empty:
-    senha_admin = admin_row["Pin"].iloc[0]
-else:
-    senha_admin = None
+senha_admin = st.secrets["Admin"]
 
 
 # Carregar dados existentes
