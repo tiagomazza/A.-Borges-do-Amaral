@@ -33,7 +33,7 @@ def save_to_new_sheet(df, sheet_name):
     if st.button("Salvar em nova aba"):
         if sheet_name:
             try:
-                conn.create(worksheet=sheet_name, rows=len(df) + 1, cols=len(df.columns))
+                conn.create(worksheet=sheet_name)  # Removidos os argumentos rows e cols
                 conn.update(worksheet=sheet_name, data=df)
                 st.success(f"Dados salvos na nova aba '{sheet_name}' com sucesso.")
             except Exception as e:
@@ -182,6 +182,9 @@ elif pagina_selecionada == "Consultas":
         'Entrada Tarde': 'first',
         'Saída Tarde': 'first'
     }).reset_index()
+
+    # Preencher dados faltantes com os horários padrão
+    fill_missing_data(grouped_data)
 
     # Calcular o total trabalhado por dia
     grouped_data['Total trabalhado'] = np.nan
