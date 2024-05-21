@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
 
@@ -184,10 +184,14 @@ elif pagina_selecionada == "Consultas":
     }).reset_index()
 
     # Calcular o total trabalhado por dia
-    grouped_data['Total trabalhado'] = (grouped_data['Saída Manhã'] - grouped_data['Entrada Manhã']) + (grouped_data['Saída Tarde'] - grouped_data['Entrada Tarde'])
+    grouped_data['Total trabalhado'] = np.nan
+    for index, row in grouped_data.iterrows():
+        if not (pd.isnull(row['Entrada Manhã']) or pd.isnull(row['Saída Manhã']) or pd.isnull(row['Entrada Tarde']) or pd.isnull(row['Saída Tarde'])):
+            total_trabalhado = (row['Saída Manhã'] - row['Entrada Manhã']) + (row['Saída Tarde'] - row['Entrada Tarde'])
+            grouped_data.at[index, 'Total trabalhado'] = total_trabalhado
 
     # Converter o total trabalhado para horas e minutos
-    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].dt.total_seconds() / 3600
+    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: x.total_seconds() / 3600 if pd.notnull(x) else 0)
     grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
 
     # Converter as colunas de entrada e saída para o formato hh:mm
@@ -200,7 +204,7 @@ elif pagina_selecionada == "Consultas":
     st.write(grouped_data)
 
 elif pagina_selecionada == "Admin":
-    # Botão para preencher os dados faltantes com os horários padrão
+    st.title("Administração")
 
     # Filtrar por nome
     nomes = existing_data_reservations["Name"].unique()
@@ -251,15 +255,14 @@ elif pagina_selecionada == "Admin":
     }).reset_index()
 
     # Calcular o total trabalhado por dia
+    grouped_data['Total trabalhado'] = np.nan
     for index, row in grouped_data.iterrows():
         if not (pd.isnull(row['Entrada Manhã']) or pd.isnull(row['Saída Manhã']) or pd.isnull(row['Entrada Tarde']) or pd.isnull(row['Saída Tarde'])):
             total_trabalhado = (row['Saída Manhã'] - row['Entrada Manhã']) + (row['Saída Tarde'] - row['Entrada Tarde'])
             grouped_data.at[index, 'Total trabalhado'] = total_trabalhado
-        else:
-            grouped_data.at[index, 'Total trabalhado'] = np.nan
 
     # Converter o total trabalhado para horas e minutos
-    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].dt.total_seconds() / 3600
+    grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: x.total_seconds() / 3600 if pd.notnull(x) else 0)
     grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
 
     # Converter as colunas de entrada e saída para o formato hh:mm
@@ -272,4 +275,4 @@ elif pagina_selecionada == "Admin":
     st.write(grouped_data)
 
     sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_Aba")
-    save_to_new_sheet(existing_data_reservations, sheet_name)
+    save_to_new_sheet(grouped_data, sheet_name)
