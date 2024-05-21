@@ -69,7 +69,7 @@ else:
 existing_data_reservations = load_existing_data("Folha")
 
 # Página inicial para entrada da senha
-if st.sidebar.text_input("Area restrita:", type="password") == senha_admin:
+if st.sidebar.text_input("Area restrita:", type="password") == str(senha_admin):
     # Conteúdo das abas "Consultas" e "Admin" aqui
     if pagina_selecionada == "Consultas":
         st.title("Consulta de Registros")
