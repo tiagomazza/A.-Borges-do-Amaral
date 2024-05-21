@@ -155,7 +155,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
 
                     st.success("Dados registrados com sucesso!")
             else:
-                st.sidebar.warning("Pin incorreto.")
+                st.warning("Pin incorreto.")
         except ValueError:
             pass
 
@@ -313,4 +313,4 @@ if st.sidebar.text_input("",type="password") == str(senha_admin):
         if st.button("Salvar dados"):
             save_to_new_sheet(grouped_data)
 else:
-    st.sidebar.warning("Verifique o Pin para consultas")
+    pass
