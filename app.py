@@ -289,4 +289,6 @@ elif pagina_selecionada == "Admin":
     st.write(grouped_data)
 
     sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_Aba")
-    save_to_new_sheet(grouped_data, sheet_name)
+    if st.button("Salvar dados na aba 'exportado'"):
+        save_to_new_sheet(grouped_data)
+  
