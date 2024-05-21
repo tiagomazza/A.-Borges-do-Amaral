@@ -28,25 +28,18 @@ def fill_missing_data(data_frame):
         if pd.isnull(row['Saída Tarde']):
             data_frame.at[index, 'Saída Tarde'] = default_exit_afternoon
 
-def save_to_excel(df, text_first_cell):
-    # Criar um arquivo XLSX com o nome especificado pelo usuário
-    file_name = st.text_input("Digite o nome do arquivo (sem a extensão):", "dados_registrados")
-    if st.button("Salvar em XLSX"):
-        if file_name:
-            file_path = f"{file_name}.xlsx"
-            with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
-                # Escrever o texto da primeira célula
-                if text_first_cell:
-                    workbook = writer.book
-                    worksheet = workbook.add_worksheet()
-                    worksheet.write(0, 0, text_first_cell)
-
-                # Salvar o DataFrame no arquivo XLSX
-                df.to_excel(writer, index=False)
-            st.success(f"Dados salvos em '{file_name}.xlsx' com sucesso.")
+def save_to_new_sheet(df, sheet_name):
+    # Criar uma nova aba com o nome especificado pelo usuário e salvar os dados nela
+    if st.button("Salvar em nova aba"):
+        if sheet_name:
+            try:
+                conn.create(worksheet=sheet_name, rows=len(df) + 1, cols=len(df.columns))
+                conn.update(worksheet=sheet_name, data=df)
+                st.success(f"Dados salvos na nova aba '{sheet_name}' com sucesso.")
+            except Exception as e:
+                st.error(f"Erro ao criar a nova aba: {e}")
         else:
-            st.warning("Por favor, digite um nome para o arquivo.")
-
+            st.warning("Por favor, digite um nome para a nova aba.")
 
 # Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
@@ -209,7 +202,6 @@ elif pagina_selecionada == "Consultas":
 elif pagina_selecionada == "Admin":
     # Botão para preencher os dados faltantes com os horários padrão
 
-
     # Filtrar por nome
     nomes = existing_data_reservations["Name"].unique()
     filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
@@ -279,5 +271,5 @@ elif pagina_selecionada == "Admin":
     # Exibir o DataFrame agrupado na página
     st.write(grouped_data)
 
-    text_first_cell = st.text_input("Digite o texto da primeira célula:", "Relatório de Registros")
-    save_to_excel(existing_data_reservations, text_first_cell)
+    sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_Aba")
+    save_to_new_sheet(existing_data_reservations, sheet_name)
