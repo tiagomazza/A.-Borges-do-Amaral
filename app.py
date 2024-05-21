@@ -157,7 +157,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
             else:
                 st.warning("Pin incorreto.")
         except ValueError:
-            pass
+            st.warning("Utilize somente numeros")
 
 # Página inicial para entrada da senha
 if st.sidebar.text_input("",type="password") == str(senha_admin):
