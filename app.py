@@ -54,10 +54,10 @@ def save_to_new_sheet(df, sheet_name="exportado"):
 st.sidebar.image("https://aborgesdoamaral.pt/wp-content/uploads/2021/04/marca-de-75-anos.png", use_column_width=True)  # 
 pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas", "Definições"])
 
-existing_data_reservations = load_existing_data("Folha")
+
 dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
 
-admin_row = dados.loc[dados["Nome"] == "Admin"]
+admin_row = int(dados.loc[dados["Nome"] == "Admin"])
 if not admin_row.empty:
     senha_admin = str(admin_row["Pin"].iloc[0])
 else:
@@ -66,7 +66,7 @@ else:
 
 
 # Carregar dados existentes
-
+existing_data_reservations = load_existing_data("Folha")
 
 # Página inicial para entrada da senha
 if st.sidebar.text_input("Area restrita:", type="password") == senha_admin:
@@ -222,7 +222,7 @@ if st.sidebar.text_input("Area restrita:", type="password") == senha_admin:
         if st.button("Salvar dados"):
             save_to_new_sheet(grouped_data)
 else:
-    st.warning("Senha incorreta. Você não tem permissão para acessar esta página.")
+    st.warning("Pin incorreto.")
 
 # Determinar qual página exibir com base na seleção do usuário
 if pagina_selecionada == "Marcação de Ponto":
