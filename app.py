@@ -75,10 +75,10 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
     pin_digitado = st.text_input("Digite o seu PIN:")
 
     # Verificar se o PIN foi digitado
-    if pin_digitado:
+    if str(pin_digitado):
         # Ler os dados da aba "Dados" para encontrar o nome correspondente ao PIN inserido
         dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
-        
+               
         # Verificar se o PIN está na lista de PINs válidos
         if int(float(pin_digitado)) in dados["Pin"].tolist():
             nome = dados.loc[dados["Pin"] == int(float(pin_digitado)), "Nome"].iloc[0]
