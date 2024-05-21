@@ -51,7 +51,7 @@ def save_to_new_sheet(df, sheet_name="exportado"):
         st.success(f"Dados salvos na aba '{sheet_name}' com sucesso.")
     except Exception as e:
         st.error(f"Erro ao salvar dados na aba '{sheet_name}': {e}")
-
+st.sidebar.image("https://aborgesdoamaral.pt/wp-content/uploads/2021/04/marca-de-75-anos.png", use_column_width=True)  # 
 pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas", "Definições"])
 senha_admin = "senha"
 # Carregar dados existentes
