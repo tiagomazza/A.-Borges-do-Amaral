@@ -55,7 +55,8 @@ st.sidebar.image("https://aborgesdoamaral.pt/wp-content/uploads/2021/04/marca-de
 pagina_selecionada = st.sidebar.radio("Acessos", ["Marcação de Ponto", "Consultas", "Definições"])
 
 
-senha_admin = st.secrets["Admin"]
+senha_admin = st.secrets["Admin"]["password"]
+
 
 
 # Carregar dados existentes
