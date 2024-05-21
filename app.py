@@ -157,14 +157,6 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
             else:
                 st.error("PIN inválido!")
 
-           
-        except ValueError:
-            st.error("Entrada inválida para PIN!")
-
-
-        else:
-            st.warning("PIN incorreto. Por favor, digite um PIN válido.")
-
 
 # Página inicial para entrada da senha
 if st.sidebar.text_input("",type="password") == str(senha_admin):
