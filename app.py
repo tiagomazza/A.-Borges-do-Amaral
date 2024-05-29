@@ -211,7 +211,7 @@ if st.sidebar.text_input("",type="password") == str(senha_admin):
         }).reset_index()
 
         # Preencher dados faltantes com os horários padrão
-        fill_missing_data(grouped_data)
+        #fill_missing_data(grouped_data)
 
         # Calcular o total trabalhado por dia
         grouped_data['Total trabalhado'] = np.nan
