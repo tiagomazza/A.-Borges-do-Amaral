@@ -9,7 +9,7 @@ st.markdown(
     <style>
     /* Altera a cor de fundo e a cor do texto do campo de entrada */
     .stTextInput>div>div>input {
-        background-color: #f0f0f0; /* Cor de fundo desejada */
+        background-color: #ff6961; /* Cor de fundo desejada */
         color: #000000; /* Cor do texto desejada */
     }
     </style>
