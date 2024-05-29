@@ -72,7 +72,7 @@ existing_data_reservations = load_existing_data("Folha")
 if pagina_selecionada == "✍🏽Marcação de Ponto":
     st.title("✍🏽Marcação de Ponto")
     # Adicionar campo de PIN
-    pin_digitado = st.text_input("Digite o seu PIN:")
+    pin_digitado = st.text_input("Digite o seu PIN:",background="#f0f0f0")
 
     # Verificar se o PIN foi digitado
     if str(pin_digitado):
