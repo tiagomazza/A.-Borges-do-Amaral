@@ -72,7 +72,7 @@ dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
 
 admin_row = dados.loc[dados["Nome"] == "Admin"]
 if not admin_row.empty:
-    senha_admin =  (admin_row["Pin"].iloc[0])
+    senha_admin =  int(admin_row["Pin"].iloc[0])
 else:
     senha_admin = None
 
@@ -83,8 +83,6 @@ existing_data_reservations = load_existing_data("Folha")
 # Determinar qual página exibir com base na seleção do usuário
 if pagina_selecionada == "✍🏽Marcação de Ponto":
     st.title("✍🏽Marcação de Ponto")
-    st.title(type(senha_admin)) 
-    st.title(senha_admin) 
 
     # Adicionar campo de PIN
     pin_digitado = st.text_input("Digite o seu PIN:")
@@ -175,7 +173,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
             st.warning("Utilize somente numeros")
 
 # Página inicial para entrada da senha
-if st.sidebar.text_input("",type="password") == float(senha_admin):
+if st.sidebar.text_input int("",type="password") == (senha_admin):
     # Conteúdo das abas "Consultas" e "Admin" aqui
 
     if pagina_selecionada == "🔍Consultas":
@@ -183,6 +181,7 @@ if st.sidebar.text_input("",type="password") == float(senha_admin):
 
         st.title(senha_admin)
         st.title(type(senha_admin)) 
+
         
         # Filtrar por nome
         nomes = existing_data_reservations["Name"].unique()
