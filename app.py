@@ -175,8 +175,9 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
             st.warning("Utilize somente numeros")
 
 # Página inicial para entrada da senha
-if st.sidebar.text_input ("",type="password") == (senha_admin):
-    # Conteúdo das abas "Consultas" e "Admin" aqui
+try:
+    entered_password = str(int(st.sidebar.text_input ("",type="password")))
+    # Proceed with integer operations using entered_password
 
     if pagina_selecionada == "🔍Consultas":
         st.title("🔍Consulta")
@@ -332,5 +333,7 @@ if st.sidebar.text_input ("",type="password") == (senha_admin):
         sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
         if st.button("Salvar dados"):
             save_to_new_sheet(grouped_data)
-else:
+except ValueError:
+    # Handle invalid input (not an integer)
+    print("Invalid password format. Please enter a valid integer.")
     pass
