@@ -72,7 +72,7 @@ dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
 
 admin_row = dados.loc[dados["Nome"] == "Admin"]
 if not admin_row.empty:
-    senha_admin = str (int (admin_row["Pin"].iloc[0]))
+    senha_admin = str (str (admin_row["Pin"].iloc[0]))
 else:
     senha_admin = None
 
