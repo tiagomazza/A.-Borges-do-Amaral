@@ -72,7 +72,7 @@ dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
 
 admin_row = dados.loc[dados["Nome"] == "Admin"]
 if not admin_row.empty:
-    senha_admin =  (int(admin_row["Pin"].iloc[0]))
+    senha_admin =  (admin_row["Pin"].iloc[0])
 else:
     senha_admin = None
 
@@ -173,7 +173,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
             st.warning("Utilize somente numeros")
 
 # Página inicial para entrada da senha
-if int(st.sidebar.text_input ("",type="password") == int(senha_admin)):
+if st.sidebar.text_input ("",type="password") == (senha_admin):
     # Conteúdo das abas "Consultas" e "Admin" aqui
 
     if pagina_selecionada == "🔍Consultas":
