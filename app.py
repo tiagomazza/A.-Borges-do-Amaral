@@ -327,8 +327,10 @@ try:
         if st.button("Salvar dados"):
             save_to_new_sheet(grouped_data)
 
-        st.write(f"[Aceder a planilha]("https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584")
-        st.write(f"[Aceder a documentação]("https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584") 
+        
+        st.write(f"[Abrir Link](https://example.com)")
+        #st.write(f"[Aceder a planilha]("https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584")
+        #st.write(f"[Aceder a documentação]("https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584") 
 
         
 except ValueError:
