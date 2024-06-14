@@ -83,6 +83,7 @@ existing_data_reservations = load_existing_data("Folha")
 # Determinar qual página exibir com base na seleção do usuário
 if pagina_selecionada == "✍🏽Marcação de Ponto":
     st.title("✍🏽Marcação de Ponto")
+    st.title(type(senha_admin)) 
     # Adicionar campo de PIN
     pin_digitado = st.text_input("Digite o seu PIN:")
 
