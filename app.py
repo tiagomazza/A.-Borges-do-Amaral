@@ -174,6 +174,8 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
 # Página inicial para entrada da senha
 if st.sidebar.text_input("",type="password") == (senha_admin):
     # Conteúdo das abas "Consultas" e "Admin" aqui
+    print (senha_admin)
+    print (type(senha_admin)) 
     if pagina_selecionada == "🔍Consultas":
         st.title("🔍Consulta")
         
