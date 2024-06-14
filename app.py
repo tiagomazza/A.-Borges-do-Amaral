@@ -83,8 +83,6 @@ existing_data_reservations = load_existing_data("Folha")
 # Determinar qual página exibir com base na seleção do usuário
 if pagina_selecionada == "✍🏽Marcação de Ponto":
     st.title("✍🏽Marcação de Ponto")
-    st.title(senha_admin)
-    st.title(type(senha_admin)) 
 
     # Adicionar campo de PIN
     pin_digitado = st.text_input("Digite o seu PIN:")
@@ -177,14 +175,9 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
 # Página inicial para entrada da senha
 try:
     entered_password = str(int(st.sidebar.text_input ("",type="password")))
-    # Proceed with integer operations using entered_password
 
     if pagina_selecionada == "🔍Consultas":
         st.title("🔍Consulta")
-
-        st.title(senha_admin)
-        st.title(type(senha_admin)) 
-
         
         # Filtrar por nome
         nomes = existing_data_reservations["Name"].unique()
@@ -333,6 +326,11 @@ try:
         sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
         if st.button("Salvar dados"):
             save_to_new_sheet(grouped_data)
+
+        if st.button("Ver Planilha"):
+            st.write(f"[Abrir Link](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
+
+        
 except ValueError:
     # Handle invalid input (not an integer)
     print("Invalid password format. Please enter a valid integer.")
