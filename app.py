@@ -178,8 +178,8 @@ if st.sidebar.text_input("",type="password") == (senha_admin):
     if pagina_selecionada == "🔍Consultas":
         st.title("🔍Consulta")
 
-        print (senha_admin)
-        print (type(senha_admin)) 
+        st.title(senha_admin)
+        st.title(type(senha_admin)) 
         
         # Filtrar por nome
         nomes = existing_data_reservations["Name"].unique()
