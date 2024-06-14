@@ -328,7 +328,7 @@ try:
             save_to_new_sheet(grouped_data)
 
         if st.button("Ver Planilha"):
-            st.write(f"[Abrir Link](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
+            st.link_button("Abrir Link", href="https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584") 
 
         
 except ValueError:
