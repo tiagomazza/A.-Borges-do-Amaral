@@ -327,9 +327,9 @@ try:
         if st.button("Salvar dados"):
             save_to_new_sheet(grouped_data)
 
-        if st.button("Ver Planilha"):
-            st.link_button("Abrir Link", href="https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584") 
+        if st.link_button("Abrir Link", href="https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584") 
 
+            
         
 except ValueError:
     # Handle invalid input (not an integer)
