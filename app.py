@@ -173,7 +173,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
             st.warning("Utilize somente numeros")
 
 # Página inicial para entrada da senha
-if st.sidebar.text_input str("",type="password") == str(senha_admin):
+if str(st.sidebar.text_input("",type="password") == str(senha_admin)):
     # Conteúdo das abas "Consultas" e "Admin" aqui
     if pagina_selecionada == "🔍Consultas":
         st.title("🔍Consulta")
