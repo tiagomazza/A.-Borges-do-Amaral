@@ -84,6 +84,8 @@ existing_data_reservations = load_existing_data("Folha")
 if pagina_selecionada == "✍🏽Marcação de Ponto":
     st.title("✍🏽Marcação de Ponto")
     st.title(type(senha_admin)) 
+    st.title(senha_admin) 
+
     # Adicionar campo de PIN
     pin_digitado = st.text_input("Digite o seu PIN:")
 
@@ -173,7 +175,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
             st.warning("Utilize somente numeros")
 
 # Página inicial para entrada da senha
-if st.sidebar.text_input("",type="password") == (senha_admin):
+if st.sidebar.text_input("",type="password") == float(senha_admin):
     # Conteúdo das abas "Consultas" e "Admin" aqui
 
     if pagina_selecionada == "🔍Consultas":
