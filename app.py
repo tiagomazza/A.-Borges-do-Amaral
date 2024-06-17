@@ -107,6 +107,9 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                 if st.button("☕ Entrada Manhã"):
                     # Obter a hora atual
                     submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    current_time = datetime.now()
+                    one_hour_after = current_time + timedelta(hours=1)
+                    submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
                     
                     # Criar nova linha com nome, botão e hora
                     new_row = {"Name": nome, "Button": "Entrada Manhã", "SubmissionDateTime": submission_datetime}
