@@ -126,6 +126,9 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                 if st.button("🌮 Saída Manhã"):
                     # Obter a hora atual
                     submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    current_time = datetime.now()
+                    one_hour_after = current_time + timedelta(hours=1)
+                    submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
                     
                     # Criar nova linha com nome, botão e hora
                     new_row = {"Name": nome, "Button": "Saída Manhã", "SubmissionDateTime": submission_datetime}
@@ -142,6 +145,9 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                 if st.button("🌄 Entrada Tarde"):
                     # Obter a hora atual
                     submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    current_time = datetime.now()
+                    one_hour_after = current_time + timedelta(hours=1)
+                    submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
                     
                     # Criar nova linha com nome, botão e hora
                     new_row = {"Name": nome, "Button": "Entrada Tarde", "SubmissionDateTime": submission_datetime}
@@ -157,7 +163,10 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
 
                 if st.button("😴 Saída Tarde"):
                     # Obter a hora atual
-                    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")+ timedelta(hours=1)
+                    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    current_time = datetime.now()
+                    one_hour_after = current_time + timedelta(hours=1)
+                    submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
                     
                     # Criar nova linha com nome, botão e hora
                     new_row = {"Name": nome, "Button": "Saída Tarde", "SubmissionDateTime": submission_datetime}
