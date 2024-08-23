@@ -8,6 +8,7 @@ gspread-pandas==3.3.0
 streamlit==1.32.2
 tenacity==8.2.3
 toml==0.10.2
+streamlit_gsheets
 git+https://github.com/streamlit/gsheets-connection
 st-gsheets-connection
 datetime
