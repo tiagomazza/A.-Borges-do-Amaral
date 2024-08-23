@@ -14,3 +14,4 @@ st-gsheets-connection
 datetime
 plotly.express
 xlsxwriter
+st-gsheets-connection
