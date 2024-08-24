@@ -9,9 +9,9 @@ streamlit==1.22
 tenacity==8.2.3
 toml==0.10.2
 streamlit_gsheets
-git+https://github.com/streamlit/gsheets-connection
 st-gsheets-connection
 datetime
 plotly.express
 xlsxwriter
 st-gsheets-connection
+streamlit>=1.22.0
