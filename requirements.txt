@@ -13,5 +13,5 @@ st-gsheets-connection
 datetime
 plotly.express
 xlsxwriter
-st-gsheets-connection
+st-gsheets-connection==0.1.0
 streamlit>=1.22.0
