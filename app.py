@@ -42,7 +42,6 @@ def fill_missing_data(data_frame):
             data_frame.at[index, 'Saída Tarde'] = default_exit_afternoon
 
 def save_to_new_sheet(df, sheet_name="exportado"):
-    sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
     try:
         # Verifica se a aba já existe
         try:
@@ -260,7 +259,7 @@ try:
         # Exibir o DataFrame agrupado na página
         st.write(grouped_data)
 
-        #sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
+        sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
         if st.button("Salvar dados"):
             save_to_new_sheet(grouped_data)
         st.write(f"[Aceder a planilha](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
