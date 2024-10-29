@@ -1,8 +1,9 @@
+
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
-from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
+from datetime import datetime, timedelta
 
 st.markdown(
     """
@@ -17,10 +18,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Conexão com o Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# Função para carregar os dados existentes da planilha
 def load_existing_data(worksheet_name):
     existing_data = conn.read(worksheet=worksheet_name, ttl=5)
     return existing_data.dropna(how="all")
@@ -41,30 +40,27 @@ def fill_missing_data(data_frame):
         if pd.isnull(row['Saída Tarde']):
             data_frame.at[index, 'Saída Tarde'] = default_exit_afternoon
 
-def save_to_new_sheet(df, sheet_name="exportado"):
+def save_to_new_sheet(df):
     try:
-        # Verifica se a aba já existe
         try:
             existing_data = conn.read(worksheet=sheet_name, ttl=5)
         except Exception:
             existing_data = None
         
-        # Se não existir, cria a aba
         if existing_data is None:
             conn.create(worksheet=sheet_name)
 
-        # Converte DataFrame para dicionário
         df_dict = df.to_dict(orient="records")
-        print("DataFrame convertido para dicionário:", df_dict)  # Adicionado para depuração
+        print("DataFrame convertido para dicionário:", df_dict)  
 
-        # Atualiza a aba com os dados
         conn.update(worksheet=sheet_name, data=df_dict)
-        print("Dados atualizados na nova aba.")  # Adicionado para depuração
+        print("Dados atualizados na nova aba.")  
 
         st.success(f"Dados salvos na aba '{sheet_name}' com sucesso.")
     except Exception as e:
         st.error(f"Erro ao salvar dados na aba '{sheet_name}': {e}")
 st.sidebar.image("https://aborgesdoamaral.pt/wp-content/uploads/2021/04/marca-de-75-anos.png", use_column_width=True)  # 
+
 pagina_selecionada = st.sidebar.radio("", ["✍🏽Marcação de Ponto", "🔍Consultas", "🔐Restrito"])
 
 
@@ -77,129 +73,135 @@ else:
     senha_admin = None
 
 
-# Carregar dados existentes
 existing_data_reservations = load_existing_data("Folha")
 
-# Determinar qual página exibir com base na seleção do usuário
 if pagina_selecionada == "✍🏽Marcação de Ponto":
     st.title("✍🏽Marcação de Ponto")
 
-    # Adicionar campo de PIN
-    pin_digitado = st.text_input("Digite o seu PIN:")
+    pin_digitado = st.text_input("Digite o seu PIN:",type="password")
 
-    # Verificar se o PIN foi digitado
     if str(pin_digitado):
-        # Ler os dados da aba "Dados" para encontrar o nome correspondente ao PIN inserido
         dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
-               
-        # Verificar se o PIN está na lista de PINs válidos
         try:
             pin_int = int(float(pin_digitado))
             if pin_int in dados["Pin"].tolist():
                 nome = dados.loc[dados["Pin"] == pin_int, "Nome"].iloc[0]
-                
-                # Dar as boas-vindas utilizando o nome correspondente
-                st.write(f"😀 Bem-vindo, {nome}!")
 
-                # Adicionar espaço entre a mensagem de boas-vindas e os botões
+                st.write(f"😀 Bem-vindo, {nome}!")
                 st.write("")
 
                 if st.button("☕ Entrada Manhã"):
-                    # Obter a hora atual
-                    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    current_time = datetime.now()
-                    one_hour_after = current_time + timedelta(hours=1)
-                    submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
+                                current_time = datetime.now()
+                                one_hour_after = current_time + timedelta(hours=1)
+                                submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
+                                new_data = pd.DataFrame({
+                                    "Name": [nome],
+                                    "Button": ["Entrada Manhã"],
+                                    "SubmissionDateTime": [submission_datetime]
+                                })
 
-                    # Criar nova linha com nome, botão e hora
-                    new_row = {"Name": nome, "Button": "Entrada Manhã", "SubmissionDateTime": submission_datetime}
+                                existing_data_reservations = conn.read(worksheet="Folha")
+                                existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
 
-                    # Adicionar nova linha aos dados existentes
-                    new_rows = existing_data_reservations.to_dict(orient="records")
-                    new_rows.append(new_row)
+                                first_empty_index = existing_data_reservations.index[existing_data_reservations.isnull().all(axis=1)].min()
+                                
+                                if pd.isna(first_empty_index):
+                                    first_empty_index = len(existing_data_reservations)
 
-                    # Atualizar a planilha com os novos dados
-                    conn.update(worksheet="Folha", data=new_rows)
+                                existing_data_reservations.loc[first_empty_index] = new_data.iloc[0]
+                                conn.update(worksheet="Folha", data=existing_data_reservations)
 
-                    st.success("Dados registrados com sucesso!")
+                                st.success("Dados registrados com sucesso!")
+
 
                 if st.button("🌮 Saída Manhã"):
-                    # Obter a hora atual
-                    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    current_time = datetime.now()
-                    one_hour_after = current_time + timedelta(hours=1)
-                    submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
-                    
-                    # Criar nova linha com nome, botão e hora
-                    new_row = {"Name": nome, "Button": "Saída Manhã", "SubmissionDateTime": submission_datetime}
+                                current_time = datetime.now()
+                                one_hour_after = current_time + timedelta(hours=1)
+                                submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
 
-                    # Adicionar nova linha aos dados existentes
-                    new_rows = existing_data_reservations.to_dict(orient="records")
-                    new_rows.append(new_row)
+                                new_data = pd.DataFrame({
+                                    "Name": [nome],
+                                    "Button": ["Saída Manhã"],
+                                    "SubmissionDateTime": [submission_datetime]
+                                })
 
-                    # Atualizar a planilha com os novos dados
-                    conn.update(worksheet="Folha", data=new_rows)
+                                existing_data_reservations = conn.read(worksheet="Folha")
+                                
+                                existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
+                                first_empty_index = existing_data_reservations.index[existing_data_reservations.isnull().all(axis=1)].min()
+                                
+                                if pd.isna(first_empty_index):
+                                    first_empty_index = len(existing_data_reservations)
 
-                    st.success("Dados registrados com sucesso!")
+                                existing_data_reservations.loc[first_empty_index] = new_data.iloc[0]
+
+                                conn.update(worksheet="Folha", data=existing_data_reservations)
+
+                                st.success("Dados registrados com sucesso!")
 
                 if st.button("🌄 Entrada Tarde"):
-                    # Obter a hora atual
-                    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    current_time = datetime.now()
-                    one_hour_after = current_time + timedelta(hours=1)
-                    submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
-                    
-                    # Criar nova linha com nome, botão e hora
-                    new_row = {"Name": nome, "Button": "Entrada Tarde", "SubmissionDateTime": submission_datetime}
+                                current_time = datetime.now()
+                                one_hour_after = current_time + timedelta(hours=1)
+                                submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
 
-                    # Adicionar nova linha aos dados existentes
-                    new_rows = existing_data_reservations.to_dict(orient="records")
-                    new_rows.append(new_row)
+                                new_data = pd.DataFrame({
+                                    "Name": [nome],
+                                    "Button": ["Entrada Tarde"],
+                                    "SubmissionDateTime": [submission_datetime]
+                                })
 
-                    # Atualizar a planilha com os novos dados
-                    conn.update(worksheet="Folha", data=new_rows)
+                                existing_data_reservations = conn.read(worksheet="Folha")
+                                existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
 
-                    st.success("Dados registrados com sucesso!")
+                                first_empty_index = existing_data_reservations.index[existing_data_reservations.isnull().all(axis=1)].min()
+                                
+                                if pd.isna(first_empty_index):
+                                    first_empty_index = len(existing_data_reservations)
+
+                                existing_data_reservations.loc[first_empty_index] = new_data.iloc[0]
+                                conn.update(worksheet="Folha", data=existing_data_reservations)
+                                st.success("Dados registrados com sucesso!")
 
                 if st.button("😴 Saída Tarde"):
-                    # Obter a hora atual
-                    submission_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    current_time = datetime.now()
-                    one_hour_after = current_time + timedelta(hours=1)
-                    submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
-                    
-                    # Criar nova linha com nome, botão e hora
-                    new_row = {"Name": nome, "Button": "Saída Tarde", "SubmissionDateTime": submission_datetime}
+                                current_time = datetime.now()
+                                one_hour_after = current_time + timedelta(hours=1)
+                                submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
 
-                    # Adicionar nova linha aos dados existentes
-                    new_rows = existing_data_reservations.to_dict(orient="records")
-                    new_rows.append(new_row)
+                                new_data = pd.DataFrame({
+                                    "Name": [nome],
+                                    "Button": ["Saída Tarde"],
+                                    "SubmissionDateTime": [submission_datetime]
+                                })
 
-                    # Atualizar a planilha com os novos dados
-                    conn.update(worksheet="Folha", data=new_rows)
+                                existing_data_reservations = conn.read(worksheet="Folha")
+                                existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
 
-                    st.success("Dados registrados com sucesso!")
+                                first_empty_index = existing_data_reservations.index[existing_data_reservations.isnull().all(axis=1)].min()
+                                
+                                if pd.isna(first_empty_index):
+                                    first_empty_index = len(existing_data_reservations)
+
+                                existing_data_reservations.loc[first_empty_index] = new_data.iloc[0]
+                                conn.update(worksheet="Folha", data=existing_data_reservations)
+
+                                st.success("Dados registrados com sucesso!")
             else:
                 st.warning("Pin incorreto.")
         except ValueError:
-            st.warning("Utilize somente numeros")
+            st.warning("Utilize somente numeros")                     
 
-# Página inicial para entrada da senha
 try:
     entered_password = str(int(st.sidebar.text_input ("",type="password")))
 
     if pagina_selecionada == "🔍Consultas":
         st.title("🔍Consulta")
         
-        # Filtrar por nome
         nomes = existing_data_reservations["Name"].unique()
         filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
 
-        # Filtrar por data
         data_inicio = st.date_input("Data de Início")
         data_fim = st.date_input("Data de Fim")
 
-        # Filtrar os dados
         filtered_data = existing_data_reservations.copy()
 
         if filtro_nome != "Todos":
@@ -211,9 +213,8 @@ try:
             filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
             filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
 
-        # Criar DataFrame com os dados filtrados
         data = {                                        
-            'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
+            'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  
             'Nome': filtered_data['Name'],
             'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
             'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
@@ -228,7 +229,6 @@ try:
         df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
         df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
 
-        # Agrupar por data e nome para calcular o total trabalhado por dia
         grouped_data = df.groupby(['Data', 'Nome']).agg({
             'Entrada Manhã': 'first',
             'Saída Manhã': 'first',
@@ -236,27 +236,20 @@ try:
             'Saída Tarde': 'first'
         }).reset_index()
 
-        # Preencher dados faltantes com os horários padrão
-        #fill_missing_data(grouped_data)
 
-        # Calcular o total trabalhado por dia
         grouped_data['Total trabalhado'] = np.nan
         for index, row in grouped_data.iterrows():
             if not (pd.isnull(row['Entrada Manhã']) or pd.isnull(row['Saída Manhã']) or pd.isnull(row['Entrada Tarde']) or pd.isnull(row['Saída Tarde'])):
                 total_trabalhado = (row['Saída Manhã'] - row['Entrada Manhã']) + (row['Saída Tarde'] - row['Entrada Tarde'])
                 grouped_data.at[index, 'Total trabalhado'] = total_trabalhado
 
-        # Converter o total trabalhado para horas e minutos
         grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: x.total_seconds() / 3600 if pd.notnull(x) else 0)
         grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
-
-        # Converter as colunas de entrada e saída para o formato hh:mm
         grouped_data['Entrada Manhã'] = grouped_data['Entrada Manhã'].dt.strftime("%H:%M")
         grouped_data['Saída Manhã'] = grouped_data['Saída Manhã'].dt.strftime("%H:%M")
         grouped_data['Entrada Tarde'] = grouped_data['Entrada Tarde'].dt.strftime("%H:%M")
         grouped_data['Saída Tarde'] = grouped_data['Saída Tarde'].dt.strftime("%H:%M")
 
-        # Exibir o DataFrame agrupado na página
         st.write(grouped_data)
 
         sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
@@ -269,15 +262,12 @@ try:
       
         st.title("🔐Restrito")
 
-        # Filtrar por nome
         nomes = existing_data_reservations["Name"].unique()
         filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
 
-        # Filtrar por data
         data_inicio = st.date_input("Data de Início")
         data_fim = st.date_input("Data de Fim")
 
-        # Filtrar os dados
         filtered_data = existing_data_reservations.copy()
 
         if filtro_nome != "Todos":
@@ -289,9 +279,8 @@ try:
             filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
             filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
 
-        # Criar DataFrame com os dados filtrados
         data = {
-            'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  # Formatando para dd/mm
+            'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),  
             'Nome': filtered_data['Name'],
             'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
             'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
@@ -306,10 +295,8 @@ try:
         df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
         df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
 
-        # Preencher dados faltantes com os horários padrão
         fill_missing_data(df)
 
-        # Agrupar por data e nome para calcular o total trabalhado por dia
         grouped_data = df.groupby(['Data', 'Nome']).agg({
             'Entrada Manhã': 'first',
             'Saída Manhã': 'first',
@@ -317,24 +304,20 @@ try:
             'Saída Tarde': 'first'
         }).reset_index()
 
-        # Calcular o total trabalhado por dia
         grouped_data['Total trabalhado'] = np.nan
         for index, row in grouped_data.iterrows():
             if not (pd.isnull(row['Entrada Manhã']) or pd.isnull(row['Saída Manhã']) or pd.isnull(row['Entrada Tarde']) or pd.isnull(row['Saída Tarde'])):
                 total_trabalhado = (row['Saída Manhã'] - row['Entrada Manhã']) + (row['Saída Tarde'] - row['Entrada Tarde'])
                 grouped_data.at[index, 'Total trabalhado'] = total_trabalhado
 
-        # Converter o total trabalhado para horas e minutos
         grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: x.total_seconds() / 3600 if pd.notnull(x) else 0)
         grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
 
-        # Converter as colunas de entrada e saída para o formato hh:mm
         grouped_data['Entrada Manhã'] = grouped_data['Entrada Manhã'].dt.strftime("%H:%M")
         grouped_data['Saída Manhã'] = grouped_data['Saída Manhã'].dt.strftime("%H:%M")
         grouped_data['Entrada Tarde'] = grouped_data['Entrada Tarde'].dt.strftime("%H:%M")
         grouped_data['Saída Tarde'] = grouped_data['Saída Tarde'].dt.strftime("%H:%M")
 
-        # Exibir o DataFrame agrupado na página
         st.write(grouped_data)
 
         sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
@@ -346,6 +329,5 @@ try:
 
         
 except ValueError:
-    # Handle invalid input (not an integer)
     print("Invalid password format. Please enter a valid integer.")
     pass
