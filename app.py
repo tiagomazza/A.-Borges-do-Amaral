@@ -59,9 +59,9 @@ def save_to_new_sheet(df):
         st.success(f"Dados salvos na aba '{sheet_name}' com sucesso.")
     except Exception as e:
         st.error(f"Erro ao salvar dados na aba '{sheet_name}': {e}")
-st.sidebar.image("https://aborgesdoamaral.pt/wp-content/uploads/2021/04/marca-de-75-anos.png", use_column_width=True)  # 
+st.sidebar.image("https://aborgesdoamaral.pt/wp-content/uploads/2021/04/marca-de-75-anos.png", use_container_width=True)  # 
 
-pagina_selecionada = st.sidebar.radio("", ["✍🏽Marcação de Ponto", "🔍Consultas", "🔐Restrito"])
+pagina_selecionada = st.sidebar.radio("Menu", ["✍🏽Marcação de Ponto", "🔍Consultas", "🔐Restrito"],label_visibility="hidden")
 
 
 dados = conn.read(worksheet="Dados", usecols=["Pin", "Nome"], ttl=5)
@@ -87,13 +87,13 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
             if pin_int in dados["Pin"].tolist():
                 nome = dados.loc[dados["Pin"] == pin_int, "Nome"].iloc[0]
 
-                st.write(f"😀 Bem-vindo, {nome}!")
-                st.write("")
+                st.write(f"😀 Bem-vindo, **{nome}**!")
+                st.write("👇🏽Carregue no botão abaixo correspondente ao registo desejado:")
 
                 if st.button("☕ Entrada Manhã"):
                                 current_time = datetime.now()
                                 #one_hour_after = current_time + timedelta(hours=1)
-                                submission_datetime = current_time #one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
+                                submission_datetime = current_time.strftime("%Y-%m-%d %H:%M:%S") #one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
                                 new_data = pd.DataFrame({
                                     "Name": [nome],
                                     "Button": ["Entrada Manhã"],
@@ -191,9 +191,8 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
             st.warning("Utilize somente numeros")                     
 
 try:
-    entered_password = str(int(st.sidebar.text_input ("",type="password")))
-
-    if pagina_selecionada == "🔍Consultas":
+    entered_password = str(int(st.sidebar.text_input("Digite sua senha:", type="password")))
+    if pagina_selecionada == "🔍Consultas" and entered_password == senha_admin:
         st.title("🔍Consulta")
         
         nomes = existing_data_reservations["Name"].unique()
@@ -250,7 +249,10 @@ try:
         grouped_data['Entrada Tarde'] = grouped_data['Entrada Tarde'].dt.strftime("%H:%M")
         grouped_data['Saída Tarde'] = grouped_data['Saída Tarde'].dt.strftime("%H:%M")
 
-        st.write(grouped_data)
+        if filtered_data.empty:
+            st.warning("Nenhum dado encontrado para os filtros selecionados.")
+        else:
+            st.write(grouped_data)
 
         sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
         if st.button("Salvar dados"):
@@ -326,8 +328,10 @@ try:
 
         st.write(f"[Aceder a planilha](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
         st.write(f"[Aceder a documentação](https://docs.google.com/document/d/1wgndUW2Xb48CBi6BSgSBRVw2sdqgqFtZxg_9Go5GYLg/edit?usp=sharing)")
+    else:
+        if pagina_selecionada in ["🔍Consultas", "🔐Restrito"]:
+            st.warning("Acesso restrito. Insira a senha correta.")   
 
-        
 except ValueError:
     print("Invalid password format. Please enter a valid integer.")
     pass
