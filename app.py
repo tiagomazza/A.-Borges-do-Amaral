@@ -290,7 +290,7 @@ try:
             'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
             'Total trabalhado': pd.NaT
         }
-
+ 
         df = pd.DataFrame(data)
         df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
         df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
