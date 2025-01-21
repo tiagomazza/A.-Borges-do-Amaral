@@ -261,8 +261,7 @@ try:
         st.write(f"[Aceder a planilha](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
         st.write(f"[Aceder a documentação](https://docs.google.com/document/d/1wgndUW2Xb48CBi6BSgSBRVw2sdqgqFtZxg_9Go5GYLg/edit?usp=sharing)")
 
-    elif pagina_selecionada == "🔐Restrito":
-      
+    elif pagina_selecionada == "🔐Restrito" and entered_password == senha_admin:
         st.title("🔐Restrito")
 
         nomes = existing_data_reservations["Name"].unique()
