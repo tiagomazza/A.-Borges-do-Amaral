@@ -131,128 +131,128 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
 try:
     entered_password = str(int(st.sidebar.text_input("Digite sua senha:", type="password")))
     if pagina_selecionada == "🔍Consultas" and entered_password == senha_admin:
-    st.title("🔍Consulta")
-    # Sempre pega as 3 primeiras colunas como Name, Button, SubmissionDateTime
-    if existing_data_reservations.shape[1] >= 3:
-        analysis_df = existing_data_reservations.iloc[:, :3].copy()
-        analysis_df.columns = ["Name", "Button", "SubmissionDateTime"]
-    else:
-        st.error("A planilha não possui pelo menos três colunas para análise.")
-        st.stop()
-        nomes = existing_data_reservations["Name"].unique()
-        filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
-        data_inicio = st.date_input("Data de Início")
-        data_fim = st.date_input("Data de Fim")
-        filtered_data = existing_data_reservations.copy()
-        if filtro_nome != "Todos":
-            filtered_data = filtered_data[filtered_data["Name"] == filtro_nome]
-        if data_inicio and data_fim:
-            data_inicio = datetime.combine(data_inicio, datetime.min.time())
-            data_fim = datetime.combine(data_fim, datetime.max.time())
-            filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
-            filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
-        data = {
-            'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),
-            'Nome': filtered_data['Name'],
-            'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-            'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-            'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-            'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-            'Total trabalhado': pd.NaT
-        }
-        df = pd.DataFrame(data)
-        df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
-        df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
-        df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
-        df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
-        grouped_data = df.groupby(['Data', 'Nome']).agg({
-            'Entrada Manhã': 'first',
-            'Saída Manhã': 'first',
-            'Entrada Tarde': 'first',
-            'Saída Tarde': 'first'
-        }).reset_index()
-        grouped_data['Total trabalhado'] = np.nan
-        for index, row in grouped_data.iterrows():
-            if not (pd.isnull(row['Entrada Manhã']) or pd.isnull(row['Saída Manhã']) or pd.isnull(row['Entrada Tarde']) or pd.isnull(row['Saída Tarde'])):
-                total_trabalhado = (row['Saída Manhã'] - row['Entrada Manhã']) + (row['Saída Tarde'] - row['Entrada Tarde'])
-                grouped_data.at[index, 'Total trabalhado'] = total_trabalhado
-        grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: x.total_seconds() / 3600 if pd.notnull(x) else 0)
-        grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
-        grouped_data['Entrada Manhã'] = grouped_data['Entrada Manhã'].dt.strftime("%H:%M")
-        grouped_data['Saída Manhã'] = grouped_data['Saída Manhã'].dt.strftime("%H:%M")
-        grouped_data['Entrada Tarde'] = grouped_data['Entrada Tarde'].dt.strftime("%H:%M")
-        grouped_data['Saída Tarde'] = grouped_data['Saída Tarde'].dt.strftime("%H:%M")
-        if filtered_data.empty:
-            st.warning("Nenhum dado encontrado para os filtros selecionados.")
+        st.title("🔍Consulta")
+        # Sempre pega as 3 primeiras colunas como Name, Button, SubmissionDateTime
+        if existing_data_reservations.shape[1] >= 3:
+            analysis_df = existing_data_reservations.iloc[:, :3].copy()
+            analysis_df.columns = ["Name", "Button", "SubmissionDateTime"]
         else:
-            st.write(grouped_data)
-        sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
-        if st.button("Salvar dados"):
-            save_to_new_sheet(grouped_data)
-        st.write(f"[Aceder a planilha](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
-        st.write(f"[Aceder a documentação](https://docs.google.com/document/d/1wgndUW2Xb48CBi6BSgSBRVw2sdqgqFtZxg_9Go5GYLg/edit?usp=sharing)")
+            st.error("A planilha não possui pelo menos três colunas para análise.")
+            st.stop()
+            nomes = existing_data_reservations["Name"].unique()
+            filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
+            data_inicio = st.date_input("Data de Início")
+            data_fim = st.date_input("Data de Fim")
+            filtered_data = existing_data_reservations.copy()
+            if filtro_nome != "Todos":
+                filtered_data = filtered_data[filtered_data["Name"] == filtro_nome]
+            if data_inicio and data_fim:
+                data_inicio = datetime.combine(data_inicio, datetime.min.time())
+                data_fim = datetime.combine(data_fim, datetime.max.time())
+                filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
+                filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
+            data = {
+                'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),
+                'Nome': filtered_data['Name'],
+                'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+                'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+                'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+                'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+                'Total trabalhado': pd.NaT
+            }
+            df = pd.DataFrame(data)
+            df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
+            df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
+            df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
+            df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
+            grouped_data = df.groupby(['Data', 'Nome']).agg({
+                'Entrada Manhã': 'first',
+                'Saída Manhã': 'first',
+                'Entrada Tarde': 'first',
+                'Saída Tarde': 'first'
+            }).reset_index()
+            grouped_data['Total trabalhado'] = np.nan
+            for index, row in grouped_data.iterrows():
+                if not (pd.isnull(row['Entrada Manhã']) or pd.isnull(row['Saída Manhã']) or pd.isnull(row['Entrada Tarde']) or pd.isnull(row['Saída Tarde'])):
+                    total_trabalhado = (row['Saída Manhã'] - row['Entrada Manhã']) + (row['Saída Tarde'] - row['Entrada Tarde'])
+                    grouped_data.at[index, 'Total trabalhado'] = total_trabalhado
+            grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: x.total_seconds() / 3600 if pd.notnull(x) else 0)
+            grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
+            grouped_data['Entrada Manhã'] = grouped_data['Entrada Manhã'].dt.strftime("%H:%M")
+            grouped_data['Saída Manhã'] = grouped_data['Saída Manhã'].dt.strftime("%H:%M")
+            grouped_data['Entrada Tarde'] = grouped_data['Entrada Tarde'].dt.strftime("%H:%M")
+            grouped_data['Saída Tarde'] = grouped_data['Saída Tarde'].dt.strftime("%H:%M")
+            if filtered_data.empty:
+                st.warning("Nenhum dado encontrado para os filtros selecionados.")
+            else:
+                st.write(grouped_data)
+            sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
+            if st.button("Salvar dados"):
+                save_to_new_sheet(grouped_data)
+            st.write(f"[Aceder a planilha](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
+            st.write(f"[Aceder a documentação](https://docs.google.com/document/d/1wgndUW2Xb48CBi6BSgSBRVw2sdqgqFtZxg_9Go5GYLg/edit?usp=sharing)")
 
     elif pagina_selecionada == "🔐Restrito" and entered_password == senha_admin:
         st.title("🔐Restrito")
-    if existing_data_reservations.shape[1] >= 3:
-    analysis_df = existing_data_reservations.iloc[:, :3].copy()
-    analysis_df.columns = ["Name", "Button", "SubmissionDateTime"]
-    else:
-        st.error("A planilha não possui pelo menos três colunas para análise.")
-        st.stop()
-        nomes = existing_data_reservations["Name"].unique()
-        filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
-        data_inicio = st.date_input("Data de Início")
-        data_fim = st.date_input("Data de Fim")
-        filtered_data = existing_data_reservations.copy()
-        if filtro_nome != "Todos":
-            filtered_data = filtered_data[filtered_data["Name"] == filtro_nome]
-        if data_inicio and data_fim:
-            data_inicio = datetime.combine(data_inicio, datetime.min.time())
-            data_fim = datetime.combine(data_fim, datetime.max.time())
-            filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
-            filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
-        data = {
-            'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),
-            'Nome': filtered_data['Name'],
-            'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-            'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-            'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-            'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
-            'Total trabalhado': pd.NaT
-        }
-        df = pd.DataFrame(data)
-        df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
-        df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
-        df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
-        df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
-        fill_missing_data(df)
-        grouped_data = df.groupby(['Data', 'Nome']).agg({
-            'Entrada Manhã': 'first',
-            'Saída Manhã': 'first',
-            'Entrada Tarde': 'first',
-            'Saída Tarde': 'first'
-        }).reset_index()
-        grouped_data['Total trabalhado'] = np.nan
-        for index, row in grouped_data.iterrows():
-            if not (pd.isnull(row['Entrada Manhã']) or pd.isnull(row['Saída Manhã']) or pd.isnull(row['Entrada Tarde']) or pd.isnull(row['Saída Tarde'])):
-                total_trabalhado = (row['Saída Manhã'] - row['Entrada Manhã']) + (row['Saída Tarde'] - row['Entrada Tarde'])
-                grouped_data.at[index, 'Total trabalhado'] = total_trabalhado
-        grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: x.total_seconds() / 3600 if pd.notnull(x) else 0)
-        grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
-        grouped_data['Entrada Manhã'] = grouped_data['Entrada Manhã'].dt.strftime("%H:%M")
-        grouped_data['Saída Manhã'] = grouped_data['Saída Manhã'].dt.strftime("%H:%M")
-        grouped_data['Entrada Tarde'] = grouped_data['Entrada Tarde'].dt.strftime("%H:%M")
-        grouped_data['Saída Tarde'] = grouped_data['Saída Tarde'].dt.strftime("%H:%M")
-
-        st.write(grouped_data)
-
-        sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
-        if st.button("Salvar dados"):
-            save_to_new_sheet(grouped_data)
-
-        st.write(f"[Aceder a planilha](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
-        st.write(f"[Aceder a documentação](https://docs.google.com/document/d/1wgndUW2Xb48CBi6BSgSBRVw2sdqgqFtZxg_9Go5GYLg/edit?usp=sharing)")
+        if existing_data_reservations.shape[1] >= 3:
+        analysis_df = existing_data_reservations.iloc[:, :3].copy()
+        analysis_df.columns = ["Name", "Button", "SubmissionDateTime"]
+        else:
+            st.error("A planilha não possui pelo menos três colunas para análise.")
+            st.stop()
+            nomes = existing_data_reservations["Name"].unique()
+            filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
+            data_inicio = st.date_input("Data de Início")
+            data_fim = st.date_input("Data de Fim")
+            filtered_data = existing_data_reservations.copy()
+            if filtro_nome != "Todos":
+                filtered_data = filtered_data[filtered_data["Name"] == filtro_nome]
+            if data_inicio and data_fim:
+                data_inicio = datetime.combine(data_inicio, datetime.min.time())
+                data_fim = datetime.combine(data_fim, datetime.max.time())
+                filtered_data["SubmissionDateTime"] = pd.to_datetime(filtered_data["SubmissionDateTime"])
+                filtered_data = filtered_data[(filtered_data["SubmissionDateTime"] >= data_inicio) & (filtered_data["SubmissionDateTime"] <= data_fim)]
+            data = {
+                'Data': filtered_data['SubmissionDateTime'].dt.strftime("%d/%m"),
+                'Nome': filtered_data['Name'],
+                'Entrada Manhã': np.where(filtered_data['Button'] == 'Entrada Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+                'Saída Manhã': np.where(filtered_data['Button'] == 'Saída Manhã', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+                'Entrada Tarde': np.where(filtered_data['Button'] == 'Entrada Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+                'Saída Tarde': np.where(filtered_data['Button'] == 'Saída Tarde', filtered_data['SubmissionDateTime'].dt.strftime("%H:%M"), pd.NaT),
+                'Total trabalhado': pd.NaT
+            }
+            df = pd.DataFrame(data)
+            df['Entrada Manhã'] = pd.to_datetime(df['Entrada Manhã'])
+            df['Saída Manhã'] = pd.to_datetime(df['Saída Manhã'])
+            df['Entrada Tarde'] = pd.to_datetime(df['Entrada Tarde'])
+            df['Saída Tarde'] = pd.to_datetime(df['Saída Tarde'])
+            fill_missing_data(df)
+            grouped_data = df.groupby(['Data', 'Nome']).agg({
+                'Entrada Manhã': 'first',
+                'Saída Manhã': 'first',
+                'Entrada Tarde': 'first',
+                'Saída Tarde': 'first'
+            }).reset_index()
+            grouped_data['Total trabalhado'] = np.nan
+            for index, row in grouped_data.iterrows():
+                if not (pd.isnull(row['Entrada Manhã']) or pd.isnull(row['Saída Manhã']) or pd.isnull(row['Entrada Tarde']) or pd.isnull(row['Saída Tarde'])):
+                    total_trabalhado = (row['Saída Manhã'] - row['Entrada Manhã']) + (row['Saída Tarde'] - row['Entrada Tarde'])
+                    grouped_data.at[index, 'Total trabalhado'] = total_trabalhado
+            grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: x.total_seconds() / 3600 if pd.notnull(x) else 0)
+            grouped_data['Total trabalhado'] = grouped_data['Total trabalhado'].apply(lambda x: '{:02.0f}:{:02.0f}'.format(*divmod(x * 60, 60)))
+            grouped_data['Entrada Manhã'] = grouped_data['Entrada Manhã'].dt.strftime("%H:%M")
+            grouped_data['Saída Manhã'] = grouped_data['Saída Manhã'].dt.strftime("%H:%M")
+            grouped_data['Entrada Tarde'] = grouped_data['Entrada Tarde'].dt.strftime("%H:%M")
+            grouped_data['Saída Tarde'] = grouped_data['Saída Tarde'].dt.strftime("%H:%M")
+    
+            st.write(grouped_data)
+    
+            sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
+            if st.button("Salvar dados"):
+                save_to_new_sheet(grouped_data)
+    
+            st.write(f"[Aceder a planilha](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
+            st.write(f"[Aceder a documentação](https://docs.google.com/document/d/1wgndUW2Xb48CBi6BSgSBRVw2sdqgqFtZxg_9Go5GYLg/edit?usp=sharing)")
     else:
         if pagina_selecionada in ["🔍Consultas", "🔐Restrito"]:
             st.warning("Acesso restrito. Insira a senha correta.")   
