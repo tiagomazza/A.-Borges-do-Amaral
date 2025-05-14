@@ -94,24 +94,25 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                                 current_time = datetime.now()
                                 one_hour_after = current_time + timedelta(hours=1)
                                 submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
+                                # Garante a ordem correta das colunas
                                 new_data = pd.DataFrame({
                                     "Name": [nome],
                                     "Button": ["Entrada Manhã"],
                                     "SubmissionDateTime": [submission_datetime]
-                                })
-
+                                })[["Name", "Button", "SubmissionDateTime"]]
+                            
                                 existing_data_reservations = conn.read(worksheet="Folha")
-                                #existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
-                                existing_data_reservations = existing_data_reservations.reindex(columns=["Name", "Button", "SubmissionDateTime"])
-
+                                existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
+                            
                                 first_empty_index = existing_data_reservations.index[existing_data_reservations.isnull().all(axis=1)].min()
-                                
                                 if pd.isna(first_empty_index):
                                     first_empty_index = len(existing_data_reservations)
-
+                            
+                                # Garante que as colunas estejam na ordem correta antes de inserir
+                                existing_data_reservations = existing_data_reservations.reindex(columns=["Name", "Button", "SubmissionDateTime"])
                                 existing_data_reservations.loc[first_empty_index] = new_data.iloc[0]
                                 conn.update(worksheet="Folha", data=existing_data_reservations)
-
+                            
                                 st.success("Dados registrados com sucesso!")
 
 
