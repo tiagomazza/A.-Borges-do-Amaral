@@ -233,15 +233,15 @@ except Exception as e:
     pass
 
 sheet_name = st.text_input("Digite o nome da nova aba:", "Nova_aba")
-        if st.button("Salvar dados"):
-            save_to_new_sheet(grouped_data)
+if st.button("Salvar dados"):
+    save_to_new_sheet(grouped_data)
 
-        st.write(f"[Aceder a planilha](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
-        st.write(f"[Aceder a documentação](https://docs.google.com/document/d/1wgndUW2Xb48CBi6BSgSBRVw2sdqgqFtZxg_9Go5GYLg/edit?usp=sharing)")
-        else:
-            if pagina_selecionada in ["🔍Consultas", "🔐Restrito"]:
-                st.warning("Acesso restrito. Insira a senha correta.")   
-    
-        except ValueError:
-            print("Invalid password format. Please enter a valid integer.")
-            pass
+st.write(f"[Aceder a planilha](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
+st.write(f"[Aceder a documentação](https://docs.google.com/document/d/1wgndUW2Xb48CBi6BSgSBRVw2sdqgqFtZxg_9Go5GYLg/edit?usp=sharing)")
+else:
+    if pagina_selecionada in ["🔍Consultas", "🔐Restrito"]:
+        st.warning("Acesso restrito. Insira a senha correta.")   
+
+except ValueError:
+    print("Invalid password format. Please enter a valid integer.")
+    pass
