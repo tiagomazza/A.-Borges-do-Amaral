@@ -132,13 +132,9 @@ try:
     entered_password = str(int(st.sidebar.text_input("Digite sua senha:", type="password")))
     if pagina_selecionada == "🔍Consultas" and entered_password == senha_admin:
         st.title("🔍Consulta")
-        # Sempre pega as 3 primeiras colunas como Name, Button, SubmissionDateTime
         if existing_data_reservations.shape[1] >= 3:
             analysis_df = existing_data_reservations.iloc[:, :3].copy()
             analysis_df.columns = ["Name", "Button", "SubmissionDateTime"]
-        else:
-            st.error("A planilha não possui pelo menos três colunas para análise.")
-            st.stop()
             nomes = existing_data_reservations["Name"].unique()
             filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
             data_inicio = st.date_input("Data de Início")
@@ -191,15 +187,16 @@ try:
                 save_to_new_sheet(grouped_data)
             st.write(f"[Aceder a planilha](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
             st.write(f"[Aceder a documentação](https://docs.google.com/document/d/1wgndUW2Xb48CBi6BSgSBRVw2sdqgqFtZxg_9Go5GYLg/edit?usp=sharing)")
+        else:
+            st.error("A planilha não possui pelo menos três colunas para análise.")
+            st.stop()
 
     elif pagina_selecionada == "🔐Restrito" and entered_password == senha_admin:
         st.title("🔐Restrito")
         if existing_data_reservations.shape[1] >= 3:
-        analysis_df = existing_data_reservations.iloc[:, :3].copy()
-        analysis_df.columns = ["Name", "Button", "SubmissionDateTime"]
-        else:
-            st.error("A planilha não possui pelo menos três colunas para análise.")
-            st.stop()
+            analysis_df = existing_data_reservations.iloc[:, :3].copy()
+            analysis_df.columns = ["Name", "Button", "SubmissionDateTime"]
+
             nomes = existing_data_reservations["Name"].unique()
             filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
             data_inicio = st.date_input("Data de Início")
@@ -253,6 +250,9 @@ try:
     
             st.write(f"[Aceder a planilha](https://docs.google.com/spreadsheets/d/1ujI1CUkvZoAYuucX4yrV2Z5BN3Z8-o-Kqm3PAfMqi0I/edit?gid=1541275584#gid=1541275584)")
             st.write(f"[Aceder a documentação](https://docs.google.com/document/d/1wgndUW2Xb48CBi6BSgSBRVw2sdqgqFtZxg_9Go5GYLg/edit?usp=sharing)")
+        else:
+            st.error("A planilha não possui pelo menos três colunas para análise.")
+            st.stop()
     else:
         if pagina_selecionada in ["🔍Consultas", "🔐Restrito"]:
             st.warning("Acesso restrito. Insira a senha correta.")   
