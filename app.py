@@ -65,6 +65,12 @@ else:
     senha_admin = None
 
 existing_data_reservations = load_existing_data("Folha")
+if existing_data_reservations.shape[1] >= 3:
+    existing_data_reservations = existing_data_reservations.iloc[:, :3]
+    existing_data_reservations.columns = ["Name", "Button", "SubmissionDateTime"]
+else:
+    st.error("A planilha não possui pelo menos três colunas para análise.")
+
 
 # Função para adicionar uma nova linha respeitando a ordem das colunas da planilha
 def append_row_to_sheet(conn, worksheet, row_values):
@@ -125,7 +131,14 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
 try:
     entered_password = str(int(st.sidebar.text_input("Digite sua senha:", type="password")))
     if pagina_selecionada == "🔍Consultas" and entered_password == senha_admin:
-        st.title("🔍Consulta")
+    st.title("🔍Consulta")
+    # Sempre pega as 3 primeiras colunas como Name, Button, SubmissionDateTime
+    if existing_data_reservations.shape[1] >= 3:
+        analysis_df = existing_data_reservations.iloc[:, :3].copy()
+        analysis_df.columns = ["Name", "Button", "SubmissionDateTime"]
+    else:
+        st.error("A planilha não possui pelo menos três colunas para análise.")
+        st.stop()
         nomes = existing_data_reservations["Name"].unique()
         filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
         data_inicio = st.date_input("Data de Início")
@@ -181,6 +194,12 @@ try:
 
     elif pagina_selecionada == "🔐Restrito" and entered_password == senha_admin:
         st.title("🔐Restrito")
+    if existing_data_reservations.shape[1] >= 3:
+    analysis_df = existing_data_reservations.iloc[:, :3].copy()
+    analysis_df.columns = ["Name", "Button", "SubmissionDateTime"]
+    else:
+        st.error("A planilha não possui pelo menos três colunas para análise.")
+        st.stop()
         nomes = existing_data_reservations["Name"].unique()
         filtro_nome = st.selectbox("Filtrar por Nome", ["Todos"] + list(nomes))
         data_inicio = st.date_input("Data de Início")
