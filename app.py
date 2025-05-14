@@ -90,30 +90,36 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                 st.write(f"😀 Bem-vindo, **{nome}**!")
                 st.write("👇🏽Carregue no botão abaixo correspondente ao registo desejado:")
 
-                if st.button("☕ Entrada Manhã"):
+               if st.button("☕ Entrada Manhã"):
                                 current_time = datetime.now()
                                 one_hour_after = current_time + timedelta(hours=1)
                                 submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
-                                # Garante a ordem correta das colunas
                                 new_data = pd.DataFrame({
                                     "Name": [nome],
                                     "Button": ["Entrada Manhã"],
                                     "SubmissionDateTime": [submission_datetime]
-                                })[["Name", "Button", "SubmissionDateTime"]]
+                                })
                             
+                                # Lê os dados atuais da planilha
                                 existing_data_reservations = conn.read(worksheet="Folha")
                                 existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
                             
-                                first_empty_index = existing_data_reservations.index[existing_data_reservations.isnull().all(axis=1)].min()
-                                if pd.isna(first_empty_index):
-                                    first_empty_index = len(existing_data_reservations)
+                                # Garante que as colunas estejam na ordem correta
+                                colunas_ordenadas = ["Name", "Button", "SubmissionDateTime"]
+                                if not all(col in existing_data_reservations.columns for col in colunas_ordenadas):
+                                    # Se for a primeira vez, cria o DataFrame com as colunas certas
+                                    existing_data_reservations = pd.DataFrame(columns=colunas_ordenadas)
+                                else:
+                                    existing_data_reservations = existing_data_reservations[colunas_ordenadas]
                             
-                                # Garante que as colunas estejam na ordem correta antes de inserir
-                                existing_data_reservations = existing_data_reservations.reindex(columns=["Name", "Button", "SubmissionDateTime"])
-                                existing_data_reservations.loc[first_empty_index] = new_data.iloc[0]
-                                conn.update(worksheet="Folha", data=existing_data_reservations)
+                                # Adiciona a nova linha ao final
+                                updated_df = pd.concat([existing_data_reservations, new_data], ignore_index=True)
+                            
+                                # Atualiza a planilha
+                                conn.update(worksheet="Folha", data=updated_df)
                             
                                 st.success("Dados registrados com sucesso!")
+
 
 
                 if st.button("🌮 Saída Manhã"):
