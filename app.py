@@ -90,7 +90,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                 st.write(f"😀 Bem-vindo, **{nome}**!")
                 st.write("👇🏽Carregue no botão abaixo correspondente ao registo desejado:")
 
-               if st.button("☕ Entrada Manhã"):
+                if st.button("☕ Entrada Manhã"):
                                 current_time = datetime.now()
                                 one_hour_after = current_time + timedelta(hours=1)
                                 submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
@@ -118,7 +118,7 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                                 # Atualiza a planilha
                                 conn.update(worksheet="Folha", data=updated_df)
                             
-                                st.success("Dados registrados com sucesso!")
+                                st.success("Dados registrados com sucesso!")                        
 
 
 
