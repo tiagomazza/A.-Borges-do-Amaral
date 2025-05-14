@@ -101,7 +101,8 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                                 })
 
                                 existing_data_reservations = conn.read(worksheet="Folha")
-                                existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
+                                #existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
+                                existing_data_reservations = existing_data_reservations.reindex(columns=["Name", "Button", "SubmissionDateTime"])
 
                                 first_empty_index = existing_data_reservations.index[existing_data_reservations.isnull().all(axis=1)].min()
                                 
@@ -126,7 +127,8 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
 
                                 existing_data_reservations = conn.read(worksheet="Folha")
                                 
-                                existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
+                                #existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
+                                existing_data_reservations = existing_data_reservations.reindex(columns=["Name", "Button", "SubmissionDateTime"])
                                 first_empty_index = existing_data_reservations.index[existing_data_reservations.isnull().all(axis=1)].min()
                                 
                                 if pd.isna(first_empty_index):
@@ -149,7 +151,8 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                                 })
 
                                 existing_data_reservations = conn.read(worksheet="Folha")
-                                existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
+                                #existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
+                                existing_data_reservations = existing_data_reservations.reindex(columns=["Name", "Button", "SubmissionDateTime"])
 
                                 first_empty_index = existing_data_reservations.index[existing_data_reservations.isnull().all(axis=1)].min()
                                 
@@ -171,7 +174,8 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                                 })
 
                                 existing_data_reservations = conn.read(worksheet="Folha")
-                                existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
+                                #existing_data_reservations = existing_data_reservations.dropna(how='all').reset_index(drop=True)
+                                existing_data_reservations = existing_data_reservations.reindex(columns=["Name", "Button", "SubmissionDateTime"])
 
                                 first_empty_index = existing_data_reservations.index[existing_data_reservations.isnull().all(axis=1)].min()
                                 
