@@ -53,7 +53,7 @@ def save_to_new_sheet(df):
     except Exception as e:
         st.error(f"Erro ao salvar dados na aba '{sheet_name}': {e}")
 
-st.sidebar.image("https://aborgesdoamaral.pt/wp-content/uploads/2021/04/marca-de-75-anos.png", width=None)
+st.sidebar.image("https://aborgesdoamaral.pt/wp-content/uploads/2021/04/marca-de-75-anos.png", width='stretch')
 
 pagina_selecionada = st.sidebar.radio("Menu", ["✍🏽Marcação de Ponto", "🔍Consultas", "🔐Restrito"], label_visibility="hidden")
 
