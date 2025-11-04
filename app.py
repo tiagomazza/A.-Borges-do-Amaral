@@ -100,8 +100,9 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                     current_time = datetime.now()
                     one_hour_after = current_time #+ timedelta(hours=1)
                     submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
+                    advise_datetime = one_hour_after.strftime("%H:%M")
                     append_row_to_sheet(conn, "Folha", [nome, "Entrada Manhã", submission_datetime])
-                    st.success(f"Dados registrados com sucesso às {submission_datetime}!")
+                    st.success(f"Dados registrados com sucesso às {advise_datetime}")
 
                 if st.button("🌮 Saída Manhã"):
                     current_time = datetime.now()
@@ -260,5 +261,6 @@ try:
 except ValueError:
     print("Invalid password format. Please enter a valid integer.")
     pass
+
 
 
