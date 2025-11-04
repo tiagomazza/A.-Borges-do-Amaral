@@ -98,28 +98,28 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
 
                 if st.button("☕ Entrada Manhã"):
                     current_time = datetime.now()
-                    one_hour_after = current_time + timedelta(hours=1)
+                    one_hour_after = current_time #+ timedelta(hours=1)
                     submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
                     append_row_to_sheet(conn, "Folha", [nome, "Entrada Manhã", submission_datetime])
                     st.success("Dados registrados com sucesso!")
 
                 if st.button("🌮 Saída Manhã"):
                     current_time = datetime.now()
-                    one_hour_after = current_time + timedelta(hours=1)
+                    one_hour_after = current_time #+ timedelta(hours=1)
                     submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
                     append_row_to_sheet(conn, "Folha", [nome, "Saída Manhã", submission_datetime])
                     st.success("Dados registrados com sucesso!")
 
                 if st.button("🌄 Entrada Tarde"):
                     current_time = datetime.now()
-                    one_hour_after = current_time + timedelta(hours=1)
+                    one_hour_after = current_time #+ timedelta(hours=1)
                     submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
                     append_row_to_sheet(conn, "Folha", [nome, "Entrada Tarde", submission_datetime])
                     st.success("Dados registrados com sucesso!")
 
                 if st.button("😴 Saída Tarde"):
                     current_time = datetime.now()
-                    one_hour_after = current_time + timedelta(hours=1)
+                    one_hour_after = current_time #+ timedelta(hours=1)
                     submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
                     append_row_to_sheet(conn, "Folha", [nome, "Saída Tarde", submission_datetime])
                     st.success("Dados registrados com sucesso!")
@@ -260,3 +260,4 @@ try:
 except ValueError:
     print("Invalid password format. Please enter a valid integer.")
     pass
+
