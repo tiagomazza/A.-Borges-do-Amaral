@@ -108,22 +108,25 @@ if pagina_selecionada == "✍🏽Marcação de Ponto":
                     current_time = datetime.now()
                     one_hour_after = current_time #+ timedelta(hours=1)
                     submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
+                    advise_datetime = one_hour_after.strftime("%H:%M")
                     append_row_to_sheet(conn, "Folha", [nome, "Saída Manhã", submission_datetime])
-                    st.success(f"Dados registrados com sucesso às {submission_datetime}!")
+                    st.success(f"Dados registrados com sucesso às {advise_datetime}")
 
                 if st.button("🌄 Entrada Tarde"):
                     current_time = datetime.now()
                     one_hour_after = current_time #+ timedelta(hours=1)
                     submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
+                    advise_datetime = one_hour_after.strftime("%H:%M")
                     append_row_to_sheet(conn, "Folha", [nome, "Entrada Tarde", submission_datetime])
-                    st.success(f"Dados registrados com sucesso às {submission_datetime}!")
+                    st.success(f"Dados registrados com sucesso às {advise_datetime}")
 
                 if st.button("😴 Saída Tarde"):
                     current_time = datetime.now()
                     one_hour_after = current_time #+ timedelta(hours=1)
                     submission_datetime = one_hour_after.strftime("%Y-%m-%d %H:%M:%S")
+                    advise_datetime = one_hour_after.strftime("%H:%M")
                     append_row_to_sheet(conn, "Folha", [nome, "Saída Tarde", submission_datetime])
-                    st.success(f"Dados registrados com sucesso às {submission_datetime}!")
+                    st.success(f"Dados registrados com sucesso às {advise_datetime}")
             else:
                 st.warning("Pin incorreto.")
         except ValueError:
@@ -261,6 +264,7 @@ try:
 except ValueError:
     print("Invalid password format. Please enter a valid integer.")
     pass
+
 
 
 
